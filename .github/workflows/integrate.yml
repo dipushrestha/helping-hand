@@ -1,12 +1,9 @@
-name: Build and deploy .NET Core application to Web App helping-hands
+name: Build and integrate .NET Core application with github repo
 on:
   pull_request:
     branches:
       - main
 env:
-  AZURE_WEBAPP_NAME: helping-hands
-  AZURE_WEBAPP_PACKAGE_PATH: Server\published
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.HELPING_HANDS_FFFF }}
   CONFIGURATION: Release
   DOTNET_CORE_VERSION: 5.0.x
   WORKING_DIRECTORY: Server
