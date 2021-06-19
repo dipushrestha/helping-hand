@@ -1,0 +1,14 @@
+@*<MudCard>
+    <MudCardContent>
+        <MudText>How can we help?</MudText>
+        <MudTextField @bind-Value="TextValue" Label="" Variant="Variant.Text"></MudTextField>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Done" Color="Color.Dark">OK</MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    public string TextValue { get; set; }
+}
+*@
