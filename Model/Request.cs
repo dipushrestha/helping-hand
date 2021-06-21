@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace helping_hand.Shared
-{
+namespace helping_hand.Model 
+{ 
     public class Request
     {
+        public int Id { get; set; }
+
         public DateTime Date { get; set; }
 
         public string Urgency { get; set; }

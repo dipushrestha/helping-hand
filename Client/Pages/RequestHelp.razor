@@ -1,5 +1,5 @@
 @page "/request-help"
-@using helping_hand.Shared
+@using helping_hand.Model
 
 <h1>Request Help</h1>
 
@@ -19,6 +19,16 @@
     <div class="form-group">
         <label for="additionalInfo">Additional Information</label>
         <textarea id="additionalInfo" rows="3" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="item">Urgency</label>
+        <select>
+            <option>Urgent</option>
+            <option>Moderate</option>
+            <option>Not Urgent</option>
+        </select>
+        @*<input type="text" class="form-control" id="item" placeholder="Item">*@
     </div>
 
     <div class="form-group">
