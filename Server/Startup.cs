@@ -14,6 +14,7 @@ using helping_hand.Server.Services;
 using helping_hand.Server.Repository;
 using helping_hand.Server.IRepository;
 using helping_hand.Server.Configurations;
+using AspNetCoreRateLimit;
 
 namespace helping_hand.Server
 {
@@ -34,7 +35,12 @@ namespace helping_hand.Server
                     options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
+            services.AddMemoryCache();
+            services.ConfigureRateLimiting();
+            services.AddHttpContextAccessor();
+
             services.ConfigureHttpCacheHeaders();
+
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
@@ -77,12 +83,19 @@ namespace helping_hand.Server
             }
 
             app.ConfigureExceptionHandler();
+
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseCors("AllowAll");
+
             app.UseResponseCaching();
+            app.UseHttpCacheHeaders();
+
+            app.UseIpRateLimiting();
+
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

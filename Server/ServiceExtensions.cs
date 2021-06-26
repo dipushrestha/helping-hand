@@ -17,6 +17,8 @@ using helping_hand.Server.Errors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Marvin.Cache.Headers;
+using AspNetCoreRateLimit;
+using System.Collections.Generic;
 
 namespace helping_hand.Server
 {
@@ -100,6 +102,21 @@ namespace helping_hand.Server
             {
                 validationOptions.MustRevalidate = true;
             });
+        }
+
+        public static void ConfigureRateLimiting(this IServiceCollection services)
+        {
+            var rateLimitingRules = new List<RateLimitRule>
+            {
+                new RateLimitRule { Endpoint = "*", Limit = 500, Period = "1m" },
+                new RateLimitRule { Endpoint = "*", Limit = 3600, Period = "1h" }
+            };
+
+            services.Configure<IpRateLimitOptions>(o => o.GeneralRules = rateLimitingRules);
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddInMemoryRateLimiting();
         }
     }
 }
