@@ -1,13 +1,13 @@
-﻿using helping_hand.Server.IRepository;
-using Microsoft.AspNetCore.Authorization;
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using helping_hand.Server.IRepository;
+using Microsoft.AspNetCore.Authorization;
 
+using helping_hand.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace helping_hand.Server.Controllers
 {
@@ -27,36 +27,77 @@ namespace helping_hand.Server.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] RequestParams requestParams)
         {
-            try
-            {
-                var requests = await _unitOfWork.Requests.GetAll();
-                return Ok(requests);
-            } 
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetAll)} of the {nameof(RequestsController)}.");
-                return StatusCode(500, "Internal server error. Please try again later!");
-            }
+            var requests = await _unitOfWork.Requests.GetAll(requestParams);
+            return Ok(requests);
         }
 
-        [Authorize]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}", Name = "GetRequest")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
-            try
+            var request = await _unitOfWork.Requests.Get(q => q.Id == id);
+            return Ok(request);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Create([FromBody] Request request)
+        {
+            if (!ModelState.IsValid)
             {
-                var request = await _unitOfWork.Requests.Get(q => q.Id == id);
-                return Ok(request);
+                _logger.LogError("Invalid create request body.");
+                return BadRequest();
             }
-            catch (Exception ex)
+
+            await _unitOfWork.Requests.Insert(request);
+            await _unitOfWork.Save();
+
+            return CreatedAtRoute("GetRequest", new { request.Id }, request);
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Update(int id, [FromBody] Request request)
+        {
+            if (!ModelState.IsValid || request == null || id != request.Id)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(Get)} of the {nameof(RequestsController)}.");
-                return StatusCode(500, "Internal server error. Please try again later!");
+                _logger.LogError("Invalid update request body.");
+                return BadRequest();
             }
+
+            _unitOfWork.Requests.Update(request);
+            await _unitOfWork.Save();
+
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var request = await _unitOfWork.Requests.Get(q => id == q.Id);
+
+            if (request is null)
+            {
+                _logger.LogError($"Invalid DELETE attempt of request with id = {id}.");
+                return BadRequest();
+            }
+
+            await _unitOfWork.Requests.Delete(id);
+            await _unitOfWork.Save();
+
+            return NoContent();
         }
     }
 }

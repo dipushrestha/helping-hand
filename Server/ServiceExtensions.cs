@@ -1,17 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Text;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using Serilog;
 
 using helping_hand.Models;
 using helping_hand.Server.Data;
-using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using helping_hand.Server.Errors;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Marvin.Cache.Headers;
+using AspNetCoreRateLimit;
+using System.Collections.Generic;
 
 namespace helping_hand.Server
 {
@@ -46,6 +53,70 @@ namespace helping_hand.Server
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
                 };
             });
+        }
+
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app)
+        {
+            app.UseExceptionHandler(error =>
+            {
+                error.Run(async context =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                    context.Response.ContentType = "application/json";
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+                    if (contextFeature is not null)
+                    {
+                        Log.Error($"Something went wrong in the {contextFeature.Error}.");
+
+                        await context.Response.WriteAsync(new Error 
+                        { 
+                            StatusCode = context.Response.StatusCode,
+                            Message = "Internal Server Error! Please try again later."
+                        }.ToString());
+                    }
+                });
+            });
+        }
+
+        public static void ConfigureVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(option =>
+            {
+                option.ReportApiVersions = true;
+                option.AssumeDefaultVersionWhenUnspecified = true;
+                option.DefaultApiVersion = new ApiVersion(1, 0);
+                option.ApiVersionReader = new HeaderApiVersionReader("api-version");
+            });
+        }
+
+        public static void ConfigureHttpCacheHeaders(this IServiceCollection services)
+        {
+            services.AddResponseCaching();
+            services.AddHttpCacheHeaders(expirationOptions => 
+            {
+                expirationOptions.MaxAge = 60;
+                expirationOptions.CacheLocation = CacheLocation.Private;
+            }, 
+            validationOptions => 
+            {
+                validationOptions.MustRevalidate = true;
+            });
+        }
+
+        public static void ConfigureRateLimiting(this IServiceCollection services)
+        {
+            var rateLimitingRules = new List<RateLimitRule>
+            {
+                new RateLimitRule { Endpoint = "*", Limit = 500, Period = "1m" },
+                new RateLimitRule { Endpoint = "*", Limit = 3600, Period = "1h" }
+            };
+
+            services.Configure<IpRateLimitOptions>(o => o.GeneralRules = rateLimitingRules);
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+            services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+            services.AddInMemoryRateLimiting();
         }
     }
 }

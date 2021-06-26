@@ -20,12 +20,17 @@ namespace helping_hand.Server
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.Console()
+                .WriteTo.Console(restrictedToMinimumLevel: LogEventLevel.Warning)
+                .WriteTo.File(
+                    path: "logs\\log-.txt", 
+                    rollingInterval: RollingInterval.Day,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                )
                 .CreateLogger();
 
             try
             {
-                Log.Information("Application is starting...");
+                Log.Warning("Application is starting...");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

@@ -1,4 +1,7 @@
+using System.Threading.Tasks;
+
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
@@ -7,10 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using helping_hand.Server.Data;
+using helping_hand.Server.Services;
 using helping_hand.Server.Repository;
 using helping_hand.Server.IRepository;
 using helping_hand.Server.Configurations;
-using helping_hand.Server.Services;
+using AspNetCoreRateLimit;
 
 namespace helping_hand.Server
 {
@@ -31,6 +35,12 @@ namespace helping_hand.Server
                     options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
+            services.AddMemoryCache();
+            services.ConfigureRateLimiting();
+            services.AddHttpContextAccessor();
+
+            services.ConfigureHttpCacheHeaders();
+
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
@@ -49,10 +59,11 @@ namespace helping_hand.Server
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Helping Hands", Version = "v1" });
             });
 
-           services.AddControllersWithViews().AddNewtonsoftJson(o => {
+            services.AddControllersWithViews().AddNewtonsoftJson(o => {
                 o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-           });
+            });
 
+            services.ConfigureVersioning();
             services.AddRazorPages();
         }
 
@@ -71,11 +82,20 @@ namespace helping_hand.Server
                 app.UseExceptionHandler("/Error");
             }
 
+            app.ConfigureExceptionHandler();
+
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
             app.UseCors("AllowAll");
+
+            app.UseResponseCaching();
+            app.UseHttpCacheHeaders();
+
+            app.UseIpRateLimiting();
+
             app.UseRouting();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -83,8 +103,15 @@ namespace helping_hand.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapFallbackToFile("index.html");
+                endpoints.MapFallback("api/{**slug}", HandleApiFallback);
+                endpoints.MapFallbackToFile("{**slug}", "index.html");
             });
+        }
+
+        private Task HandleApiFallback(HttpContext context)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            return Task.CompletedTask;
         }
     }
 }
