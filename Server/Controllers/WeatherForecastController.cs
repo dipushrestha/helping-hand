@@ -1,6 +1,8 @@
-﻿using helping_hand.Shared;
+﻿using helping_hand.Models;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

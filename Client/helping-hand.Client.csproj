@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\helping-hand.Shared.csproj" />
+    <ProjectReference Include="..\Model\helping-hand.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

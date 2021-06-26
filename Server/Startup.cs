@@ -1,10 +1,16 @@
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Linq;
+
+using helping_hand.Server.Data;
+using helping_hand.Server.Repository;
+using helping_hand.Server.IRepository;
+using helping_hand.Server.Configurations;
+using helping_hand.Server.Services;
 
 namespace helping_hand.Server
 {
@@ -21,8 +27,32 @@ namespace helping_hand.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DatabaseContext>(options => 
+                    options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
+            );
 
-            services.AddControllersWithViews();
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+            services.ConfigureJWT(Configuration);
+
+            services.AddCors(o => 
+            {
+                o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());    
+            });
+
+            services.AddAutoMapper(typeof(MapperInitializer));
+            services.AddTransient<IAuthManager, AuthManager>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Helping Hands", Version = "v1" });
+            });
+
+           services.AddControllersWithViews().AddNewtonsoftJson(o => {
+                o.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+           });
+
             services.AddRazorPages();
         }
 
@@ -32,6 +62,8 @@ namespace helping_hand.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Helping Hands v1"));
                 app.UseWebAssemblyDebugging();
             }
             else
@@ -42,7 +74,10 @@ namespace helping_hand.Server
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
 
+            app.UseCors("AllowAll");
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace helping_hand.Shared
+namespace helping_hand.Models
 {
     public class WeatherForecast
     {
