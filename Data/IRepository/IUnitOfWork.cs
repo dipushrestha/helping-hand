@@ -1,4 +1,4 @@
-﻿using helping_hand.Model;
+﻿using helping_hand.Models;
 
 using System;
 using System.Threading.Tasks;

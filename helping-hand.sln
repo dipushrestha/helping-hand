@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helping-hand.Server", "Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helping-hand.Client", "Client\helping-hand.Client.csproj", "{EFF0910E-6350-42A2-9C74-935FB7022574}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helping-hand.Model", "Model\helping-hand.Model.csproj", "{95499B53-B6C0-48F7-84F8-1D3EB7A0ED2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helping-hand.Models", "Model\helping-hand.Models.csproj", "{95499B53-B6C0-48F7-84F8-1D3EB7A0ED2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "helping-hand.Data", "Data\helping-hand.Data.csproj", "{35F61DA5-58BF-4E7B-99E3-4A7E25097F8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "helping-hand.Data", "Data\helping-hand.Data.csproj", "{35F61DA5-58BF-4E7B-99E3-4A7E25097F8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

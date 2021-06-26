@@ -1,4 +1,4 @@
-﻿using helping_hand.Model;
+﻿using helping_hand.Models;
 using helping_hand.Server.Data;
 using helping_hand.Server.IRepository;
 

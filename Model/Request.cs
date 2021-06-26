@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace helping_hand.Model 
+namespace helping_hand.Models
 { 
     public class Request
     {

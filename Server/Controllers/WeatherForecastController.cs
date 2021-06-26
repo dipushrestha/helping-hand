@@ -1,4 +1,4 @@
-﻿using helping_hand.Model;
+﻿using helping_hand.Models;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

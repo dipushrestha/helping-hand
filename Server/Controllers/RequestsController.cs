@@ -1,5 +1,5 @@
 ﻿using helping_hand.Server.IRepository;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace helping_hand.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/requests")]
     [ApiController]
     public class RequestsController : ControllerBase
     {
@@ -25,6 +25,8 @@ namespace helping_hand.Server.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -39,7 +41,10 @@ namespace helping_hand.Server.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Get(int id)
         {
             try
