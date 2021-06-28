@@ -15,6 +15,7 @@ using helping_hand.Server.Repository;
 using helping_hand.Server.IRepository;
 using helping_hand.Server.Configurations;
 using AspNetCoreRateLimit;
+using helping_hand.Server.Errors;
 
 namespace helping_hand.Server
 {
@@ -108,10 +109,16 @@ namespace helping_hand.Server
             });
         }
 
-        private Task HandleApiFallback(HttpContext context)
+        private async Task HandleApiFallback(HttpContext context)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
-            return Task.CompletedTask;
+
+            var error = new Error {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "Not Found!"
+            };
+
+            await context.Response.WriteAsync(error.ToString());
         }
     }
 }

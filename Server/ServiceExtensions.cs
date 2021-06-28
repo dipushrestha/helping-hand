@@ -69,11 +69,13 @@ namespace helping_hand.Server
                     {
                         Log.Error($"Something went wrong in the {contextFeature.Error}.");
 
-                        await context.Response.WriteAsync(new Error 
-                        { 
+                        var error = new Error
+                        {
                             StatusCode = context.Response.StatusCode,
                             Message = "Internal Server Error! Please try again later."
-                        }.ToString());
+                        };
+
+                        await context.Response.WriteAsync(error.ToString());
                     }
                 });
             });

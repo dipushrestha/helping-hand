@@ -39,6 +39,12 @@ namespace helping_hand.Server.Controllers
         public async Task<IActionResult> Get(int id)
         {
             var request = await _unitOfWork.Requests.Get(q => q.Id == id);
+
+            if (request is null)
+            {
+                return NotFound();
+            }
+
             return Ok(request);
         }
 
