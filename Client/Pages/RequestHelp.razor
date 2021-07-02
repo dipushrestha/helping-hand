@@ -1,49 +1,100 @@
-@page "/request-help"
-@using helping_hand.Models
+﻿@page "/request-help"
 
-<h1>Request Help</h1>
-
-<EditForm Model="@request">
-
-    <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" class="form-control" id="name" aria-describedby="nameHelp" placeholder="Enter name">
-        <small id="nameHelp" class="form-text text-muted"></small>
-    </div>
-
-    <div class="form-group">
-        <label for="item">Item</label>
-        <input type="text" class="form-control" id="item" placeholder="Item">
-    </div>
-
-    <div class="form-group">
-        <label for="additionalInfo">Additional Information</label>
-        <textarea id="additionalInfo" rows="3" class="form-control"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label for="item">Urgency</label>
-        <select>
-            <option>Urgent</option>
-            <option>Moderate</option>
-            <option>Not Urgent</option>
-        </select>
-        @*<input type="text" class="form-control" id="item" placeholder="Item">*@
-    </div>
-
-    <div class="form-group">
-        <label for="contact">Contact</label>
-        <input type="text" class="form-control" id="contact" placeholder="Contact">
-    </div>
-
-    <div class="form-group">
-        <label for="address">Address</label>
-        <input type="text" class="form-control" id="address" placeholder="Address">
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+<MudText Typo="Typo.h5" Align="Align.Center">Request Help & Reliefs</MudText>
+<br />
+<MudContainer MaxWidth="MaxWidth.Medium">
+	<MudCard>
+		<MudCardHeader>
+			<CardHeaderContent>
+				<MudText Typo="Typo.h6" Align="Align.Left">How can we help you?</MudText>
+			</CardHeaderContent>
+		</MudCardHeader>
+		<MudCardContent>
+			<MudGrid>
+				<MudItem xs="12" sm="8" md="8">
+					<MudSelect T="string" Label="Service" HelperText="Select the help you need." MultiSelection="true" @bind-Value="Service" @bind-SelectedValues="options">
+						@foreach (var service in services)
+						{
+							<MudSelectItem T="string" Value="@service">@service</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+				<MudItem xs="12" sm="4" md="4">
+					<MudSelect T="string" Label="Urgency" HelperText="Select urgency for the help." @bind-Value="UrgencyLevel">
+						@foreach (var urgencyLevel in urgencyLevels)
+						{
+							<MudSelectItem T="string" Value="@urgencyLevel">@urgencyLevel</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+				<MudItem xs="12" sm="12" md="12">
+						<MudTextField @bind-Value="PhoneNumber" Label="Additional Message (Optional)" HelperText="Anything else you would like to add." Variant="Variant.Text"></MudTextField>
+				</MudItem>
+			</MudGrid>
+		</MudCardContent>
+	</MudCard><br />
+	<MudCard>
+		<MudCardHeader>
+			<CardHeaderContent>
+				<MudText Typo="Typo.h6" Align="Align.Left">Where is your location?</MudText>
+			</CardHeaderContent>
+		</MudCardHeader>
+		<MudCardContent>
+			<MudGrid>
+				<MudItem  xs="12" sm="12" md="12">
+					<MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Text"></MudTextField>
+				</MudItem>
+			</MudGrid>
+		</MudCardContent>
+	</MudCard><br />
+	<MudCard>
+		<MudCardHeader>
+			<CardHeaderContent>
+				<MudText Typo="Typo.h6" Align="Align.Left">How can we contact you?</MudText>
+			</CardHeaderContent>
+		</MudCardHeader>
+		<MudCardContent>
+			<MudGrid>
+				<MudItem  xs="12" sm="12" md="12">
+					<MudTextField @bind-Value="PhoneNumber" Label="Phone Number" Variant="Variant.Text"></MudTextField>
+				</MudItem>
+			</MudGrid>
+		</MudCardContent>
+	</MudCard><br />
+	<MudCard>
+		<MudCardHeader>
+			<CardHeaderContent>
+				<MudText Typo="Typo.h6" Align="Align.Left">What is your name? (optional)</MudText>
+			</CardHeaderContent>
+		</MudCardHeader>
+		<MudCardContent>
+			<MudGrid>
+				<MudItem  xs="12" sm="12" md="12">
+					<MudTextField @bind-Value="Name" Label="Name" Variant="Variant.Text"></MudTextField>
+				</MudItem>
+			</MudGrid>
+		</MudCardContent>
+	</MudCard><br />
+	<MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Request</MudButton>
+	<br />&nbsp;
+</MudContainer>
 
 @code {
-    private Request request = new Request();
-}
+	private string Service { get; set; }
+	public string UrgencyLevel { get; set; }
+	public string Address { get; set; }
+	public string PhoneNumber { get; set; }
+	public string Name { get; set; }
+
+    public HashSet<string> options { get; set; } = new HashSet<string>() {};
+
+    private string[] services =
+    {
+        "Food", "Medicines", "Bed", "Ventilator", "Oxygen"
+    };
+
+	private string[] urgencyLevels =
+	{
+		"Urgent", "Moderate", "Not Urgent"
+	};
+ }

@@ -1,0 +1,63 @@
+
+@inject HttpClient Http
+@using helping_hand.Models
+
+<h1>Live Requests</h1>
+
+@if (requests == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Urgency</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Requested On</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var request in requests)
+            {
+                <tr>
+                    <td><span class="badge badge-@(GetTag(request.Urgency))">@request.Urgency</span></td>
+                    <td>@request.Type</td>
+                    <td>@request.Name</td>
+                    <td>@request.Address</td>
+                    <td>@request.Date.ToString()</td>
+                    <td><button class="btn btn-@(GetTag(request.Urgency))">Offer Help</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    string[] urgencyLevel = new string[] { "Urgent", "Moderate", "Not Urgent" };
+
+    private Request[] requests = new Request[] {
+        new Request() { Date = DateTime.Now, Urgency = "Urgent", Name = "John Doe", Type = "Ventilator", Address = "Kathmandu" },
+        new Request() { Date = DateTime.Now, Urgency = "Urgent", Name = "Jane Doe", Type = "Oxygen", Address = "Butwal" },
+        new Request() { Date = DateTime.Now, Urgency = "Moderate", Name = "David Smith", Type = "Bed", Address = "Pokhara" },
+        new Request() { Date = DateTime.Now, Urgency = "Moderate", Name = "Jim Sterling", Type = "Food", Address = "Kathmandu" },
+        new Request() { Date = DateTime.Now, Urgency = "Not Urgent", Name = "David Bond", Type = "Food", Address = "Nepalganj" }
+    };
+
+    string GetTag(string level)
+    {
+        var tagDict = new Dictionary<string, string>()
+        {
+            { "Urgent", "danger" },
+            { "Moderate", "warning" },
+            { "Not Urgent", "secondary" }
+        };
+
+        return tagDict[level];
+    }
+
+}

@@ -1,16 +1,15 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using System;
+using System.Text;
+using System.Net.Http;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
+using MudBlazor.Services;
 
 namespace helping_hand.Client
 {
@@ -22,15 +21,7 @@ namespace helping_hand.Client
             builder.RootComponents.Add<App>("#app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            //builder.Services.AddMudServices();
-
-            builder.Services
-              .AddBlazorise(options =>
-              {
-                  options.ChangeTextOnKeyPress = true;
-              })
-              .AddBootstrapProviders()
-              .AddFontAwesomeIcons();
+            builder.Services.AddMudServices();
 
             await builder.Build().RunAsync();
         }
