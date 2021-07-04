@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>helping-hand.Server</RootNamespace>
+    <RootNamespace>helping_hand.Server</RootNamespace>
     <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
     <UserSecretsId>bb76a51c-1c30-4014-a453-75f83cf3e77b</UserSecretsId>
   </PropertyGroup>

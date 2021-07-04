@@ -1,12 +1,12 @@
-﻿using helping_hand.Data.IRepository;
-using helping_hand.Models;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+using helping_hand.Models;
+using helping_hand.Data.IRepository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace helping_hand.Server.Controllers
 {
@@ -24,15 +24,21 @@ namespace helping_hand.Server.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<string> Get()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get([FromQuery] RequestParams requestParams)
         {
-            return new string[] { "value1", "value2" };
+            var requests = await _unitOfWork.HelpRequests.GetAll(requestParams);
+            return Ok(requests);
         }
 
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}", Name = "GetHelpRequest")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var request = await _unitOfWork.HelpRequests.Get(q => q.Id == id);
+            return Ok(request);
         }
 
         [HttpPost]
@@ -51,18 +57,47 @@ namespace helping_hand.Server.Controllers
             await _unitOfWork.Save();
 
 
-            return Created($"/{helpRequest.Id}", helpRequest);
-            //return CreatedAtRoute("GetRequest", new { helpRequest.Id }, helpRequest);
+            return CreatedAtRoute("GetHelpRequest", new { helpRequest.Id }, helpRequest);
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [Authorize]
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Put(int id, [FromBody] HelpRequest helpRequest)
         {
+            if (!ModelState.IsValid || helpRequest == null || id != helpRequest.Id)
+            {
+                _logger.LogError("Invalid update request body.");
+                return BadRequest();
+            }
+
+            _unitOfWork.HelpRequests.Update(helpRequest);
+            await _unitOfWork.Save();
+
+            return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [Authorize(Roles = "Administrator")]
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> Delete(int id)
         {
+            var request = await _unitOfWork.HelpRequests.Get(q => id == q.Id);
+
+            if (request is null)
+            {
+                _logger.LogError($"Invalid DELETE attempt of request with id = {id}.");
+                return BadRequest();
+            }
+
+            await _unitOfWork.HelpRequests.Delete(id);
+            await _unitOfWork.Save();
+
+            return NoContent();
         }
     }
 }
