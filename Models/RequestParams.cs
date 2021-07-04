@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace helping_hand.Server
+namespace helping_hand.Models
 {
     public class RequestParams
     {

@@ -27,6 +27,6 @@ namespace helping_hand.Models
         [Required]
         public string PhoneNumber { get; set; }
 
-        public string Summary { get; set; }
+        public string Message { get; set; }
     }
 }

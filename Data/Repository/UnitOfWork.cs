@@ -1,8 +1,8 @@
-﻿using helping_hand.Models;
-using helping_hand.Data.IRepository;
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+using helping_hand.Models;
+using helping_hand.Data.IRepository;
 
 namespace helping_hand.Data.Repository
 {
@@ -10,6 +10,7 @@ namespace helping_hand.Data.Repository
     {
         private readonly AppDbContext _dbContext;
         private IBaseRepository<Request> _requests;
+        private IBaseRepository<HelpRequest> _helpRequests;
 
         public UnitOfWork(AppDbContext dbContext)
         {
@@ -17,6 +18,7 @@ namespace helping_hand.Data.Repository
         }
 
         public IBaseRepository<Request> Requests => _requests ??= new BaseRepository<Request>(_dbContext);
+        public IBaseRepository<HelpRequest> HelpRequests => _helpRequests ??= new BaseRepository<HelpRequest>(_dbContext);
 
         public void Dispose()
         {

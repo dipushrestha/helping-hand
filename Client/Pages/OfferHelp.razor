@@ -33,9 +33,11 @@
 @code {
 	public List<HelpRequest> helpRequests;
 
+	private DialogOptions dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Large };
+
 	public void OpenOfferHelpDialog()
 	{
-		DialogService.Show<ContactDialog>();
+		DialogService.Show<ContactDialog>("Hello", dialogOptions);
 	}
 
 }

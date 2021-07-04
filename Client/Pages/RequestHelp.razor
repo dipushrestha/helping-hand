@@ -1,4 +1,8 @@
 ﻿@page "/request-help"
+@using System.Net
+@inject HttpClient Http
+@inject ISnackbar SnackBar
+@inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h5" Align="Align.Center">Request Help & Reliefs</MudText>
 <br />
@@ -12,7 +16,7 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem xs="12" sm="8" md="8">
-					<MudSelect T="string" Label="Service" HelperText="Select the help you need." MultiSelection="true" @bind-Value="Service" @bind-SelectedValues="options">
+					<MudSelect T="string" Label="Service" HelperText="Select the help you need." MultiSelection="true" @bind-Value="helpRequest.Services" @bind-SelectedValues="options">
 						@foreach (var service in services)
 						{
 							<MudSelectItem T="string" Value="@service">@service</MudSelectItem>
@@ -20,7 +24,7 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="12" sm="4" md="4">
-					<MudSelect T="string" Label="Urgency" HelperText="Select urgency for the help." @bind-Value="UrgencyLevel">
+					<MudSelect T="string" Label="Urgency" HelperText="Select urgency for the help." @bind-Value="helpRequest.Urgency">
 						@foreach (var urgencyLevel in urgencyLevels)
 						{
 							<MudSelectItem T="string" Value="@urgencyLevel">@urgencyLevel</MudSelectItem>
@@ -28,7 +32,7 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="12" sm="12" md="12">
-						<MudTextField @bind-Value="PhoneNumber" Label="Additional Message (Optional)" HelperText="Anything else you would like to add." Variant="Variant.Text"></MudTextField>
+						<MudTextField @bind-Value="helpRequest.Message" Label="Additional Message (Optional)" HelperText="Anything else you would like to add." Variant="Variant.Text"></MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -42,7 +46,7 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="Address" Label="Address" Variant="Variant.Text"></MudTextField>
+					<MudTextField @bind-Value="helpRequest.Address" Label="Address" Variant="Variant.Text"></MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -56,7 +60,7 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="PhoneNumber" Label="Phone Number" Variant="Variant.Text"></MudTextField>
+					<MudTextField @bind-Value="helpRequest.PhoneNumber" Label="Phone Number" Variant="Variant.Text"></MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -70,21 +74,18 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="Name" Label="Name" Variant="Variant.Text"></MudTextField>
+					<MudTextField @bind-Value="helpRequest.Name" Label="Name" Variant="Variant.Text"></MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
 	</MudCard><br />
-	<MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send">Request</MudButton>
+	<MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send" OnClick="PostHelpRequest">Request</MudButton>
 	<br />&nbsp;
 </MudContainer>
 
 @code {
-	private string Service { get; set; }
-	public string UrgencyLevel { get; set; }
-	public string Address { get; set; }
-	public string PhoneNumber { get; set; }
-	public string Name { get; set; }
+
+	private readonly HelpRequest helpRequest = new();
 
     public HashSet<string> options { get; set; } = new HashSet<string>() {};
 
@@ -97,4 +98,28 @@
 	{
 		"Urgent", "Moderate", "Not Urgent"
 	};
+
+	public async Task PostHelpRequest()
+	{
+		try
+		{
+			helpRequest.RequestedDate = DateTime.Now;
+			var response = await Http.PostAsJsonAsync("/api/help-requests", helpRequest);
+
+			if (response.StatusCode != HttpStatusCode.Created)
+			{
+				var error = await response.Content.ReadFromJsonAsync<Error>();
+				SnackBar.Add(error.Title, Severity.Error);
+
+				return;
+			}
+
+			SnackBar.Add("Succesfully posted the help request.", Severity.Success);
+			NavigationManager.NavigateTo("/offer-help");
+		} 
+		catch (Exception ex)
+		{
+			SnackBar.Add($"Error while posting the help request! {ex.Message}", Severity.Error);
+		}
+	}
  }

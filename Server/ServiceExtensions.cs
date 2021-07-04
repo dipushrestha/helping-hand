@@ -1,24 +1,23 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Serilog;
-
-using helping_hand.Models;
-using helping_hand.Server.Data;
-using helping_hand.Server.Errors;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
-using Marvin.Cache.Headers;
 using AspNetCoreRateLimit;
-using System.Collections.Generic;
+using Marvin.Cache.Headers;
+
+using helping_hand.Data;
+using helping_hand.Models;
 
 namespace helping_hand.Server
 {
@@ -29,7 +28,7 @@ namespace helping_hand.Server
             var builder = services.AddIdentityCore<ApiUser>();
 
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
-            builder.AddEntityFrameworkStores<DatabaseContext>().AddDefaultTokenProviders();
+            builder.AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration Configuration)
@@ -64,16 +63,18 @@ namespace helping_hand.Server
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                     context.Response.ContentType = "application/json";
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
-
+                    
                     if (contextFeature is not null)
                     {
                         Log.Error($"Something went wrong in the {contextFeature.Error}.");
 
-                        await context.Response.WriteAsync(new Error 
-                        { 
-                            StatusCode = context.Response.StatusCode,
-                            Message = "Internal Server Error! Please try again later."
-                        }.ToString());
+                        Error error = new()
+                        {
+                            Status = context.Response.StatusCode,
+                            Title = "Internal Server Error"
+                        };
+
+                        await context.Response.WriteAsync(error.ToString());
                     }
                 });
             });

@@ -15,18 +15,18 @@ namespace helping_hand.Server.Controllers
 {
     [Route("api/auth")]
     [ApiController]
-    public class AccountController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<ApiUser> _userManager;
         private readonly IAuthManager _authManager;
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<AuthController> _logger;
         private readonly IMapper _mapper;
 
-        public AccountController
+        public AuthController
         (
             UserManager<ApiUser> userManager,
             IAuthManager authManager,
-            ILogger<AccountController> logger,
+            ILogger<AuthController> logger,
             IMapper mapper
         )
         {
@@ -67,7 +67,7 @@ namespace helping_hand.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(Register)} of the {nameof(AccountController)}.");
+                _logger.LogError(ex, $"Something went wrong in the {nameof(Register)} of the {nameof(AuthController)}.");
                 return Problem($"Something went wrong in the {nameof(Register)}.", statusCode: 500);
             }
         }
@@ -95,7 +95,7 @@ namespace helping_hand.Server.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(Login)} of the {nameof(AccountController)}.");
+                _logger.LogError(ex, $"Something went wrong in the {nameof(Login)} of the {nameof(AuthController)}.");
                 return Problem($"Something went wrong in the {nameof(Login)}.", statusCode: 500);
             }
         }

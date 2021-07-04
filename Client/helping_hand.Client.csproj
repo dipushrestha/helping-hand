@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Model\helping-hand.Models.csproj" />
+    <ProjectReference Include="..\Models\helping_hand.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

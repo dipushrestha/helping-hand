@@ -13,6 +13,8 @@ namespace helping_hand.Data
 
         public DbSet<Request> Requests { get; set; }
 
+        public DbSet<HelpRequest> HelpRequests { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

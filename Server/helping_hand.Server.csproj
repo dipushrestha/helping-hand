@@ -31,8 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\helping-hand.Client.csproj" />
-    <ProjectReference Include="..\Model\helping-hand.Models.csproj" />
+    <ProjectReference Include="..\Client\helping_hand.Client.csproj" />
+    <ProjectReference Include="..\Data\helping_hand.Data.csproj" />
+    <ProjectReference Include="..\Models\helping_hand.Models.csproj" />
   </ItemGroup>
 
 
