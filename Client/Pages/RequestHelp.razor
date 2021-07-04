@@ -16,7 +16,11 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem xs="12" sm="8" md="8">
-					<MudSelect T="string" Label="Service" HelperText="Select the help you need." MultiSelection="true" @bind-Value="helpRequest.Services" @bind-SelectedValues="options">
+					<MudSelect 
+						T="string" Label="Service" Required="true" 
+						HelperText="Select the help you need." MultiSelection="true" 
+						@bind-Value="helpRequest.Services" @bind-SelectedValues="options">
+
 						@foreach (var service in services)
 						{
 							<MudSelectItem T="string" Value="@service">@service</MudSelectItem>
@@ -24,7 +28,11 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="12" sm="4" md="4">
-					<MudSelect T="string" Label="Urgency" HelperText="Select urgency for the help." @bind-Value="helpRequest.Urgency">
+					<MudSelect 
+						T="string" Label="Urgency" Required="true" 
+						HelperText="Select urgency for the help." 
+						@bind-Value="helpRequest.Urgency">
+
 						@foreach (var urgencyLevel in urgencyLevels)
 						{
 							<MudSelectItem T="string" Value="@urgencyLevel">@urgencyLevel</MudSelectItem>
@@ -32,7 +40,10 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="12" sm="12" md="12">
-						<MudTextField @bind-Value="helpRequest.Message" Label="Additional Message (Optional)" HelperText="Anything else you would like to add." Variant="Variant.Text"></MudTextField>
+					<MudTextField 
+						@bind-Value="helpRequest.Message" Label="Additional Message (Optional)" 
+						HelperText="Anything else you would like to add." Variant="Variant.Text">
+					 </MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -46,7 +57,10 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="helpRequest.Address" Label="Address" Variant="Variant.Text"></MudTextField>
+					<MudTextField 
+						@bind-Value="helpRequest.Address" 
+						Label="Address" Required="true" Variant="Variant.Text">
+					</MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -60,7 +74,10 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="helpRequest.PhoneNumber" Label="Phone Number" Variant="Variant.Text"></MudTextField>
+					<MudTextField 
+						@bind-Value="helpRequest.PhoneNumber" 
+						Label="Phone Number" Required="true" Variant="Variant.Text">
+					</MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
@@ -79,7 +96,11 @@
 			</MudGrid>
 		</MudCardContent>
 	</MudCard><br />
-	<MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.Send" OnClick="PostHelpRequest">Request</MudButton>
+	<MudButton 
+		Variant="Variant.Filled" Color="Color.Primary" 
+		EndIcon="@Icons.Material.Filled.Send" OnClick="PostHelpRequest">
+		Request
+	</MudButton>
 	<br />&nbsp;
 </MudContainer>
 
