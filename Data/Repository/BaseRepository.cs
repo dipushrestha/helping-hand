@@ -34,7 +34,8 @@ namespace helping_hand.Data.Repository
             _dbSet.RemoveRange(entities);
         }
 
-        public async Task<T> Get(System.Linq.Expressions.Expression<Func<T, bool>> expression = null, List<string> includes = null)
+        public async Task<T> Get(
+            Expression<Func<T, bool>> expression = null, List<string> includes = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -46,7 +47,11 @@ namespace helping_hand.Data.Repository
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
         }
 
-        public async Task<IList<T>> GetAll(System.Linq.Expressions.Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
+        public async Task<IList<T>> GetAll(
+            Expression<Func<T, bool>> expression = null, 
+            Func<IQueryable<T>, 
+            IOrderedQueryable<T>> orderBy = null, 
+            List<string> includes = null)
         {
             IQueryable<T> query = _dbSet;
 

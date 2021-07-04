@@ -11,7 +11,7 @@
         <MudTextField T="string" Label="Address" Required="true" RequiredError="Address is required!"/>
     </DialogContent>
     <DialogActions>
-        <a href="tel:9813629353">
+        <a href="tel:@PhoneNumber">
             <MudIconButton Color="Color.Success" Icon="@Icons.Material.Filled.Call" Size="Size.Small" aria-label="Call"></MudIconButton>
         </a>
         <MudButton Color="Color.Primary" OnClick="Submit">Send</MudButton>
@@ -21,6 +21,8 @@
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
     
+    [Parameter] public string PhoneNumber { get; set; }
+
     void Submit() => MudDialog.Close(DialogResult.Ok(true));
     void Cancel() => MudDialog.Cancel();
 }
