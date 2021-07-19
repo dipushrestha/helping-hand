@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace helping_hand.Models
@@ -11,7 +10,7 @@ namespace helping_hand.Models
         [Required]
         public DateTime RequestedDate { get; set; }
 
-        public DateTime HelpedDate { get; set; }
+        public DateTime? HelpedDate { get; set; }
 
         [Required]
         public string Urgency { get; set; }

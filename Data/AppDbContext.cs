@@ -12,7 +12,8 @@ namespace helping_hand.Data
         public AppDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Request> Requests { get; set; }
-
+        public DbSet<Urgency> Urgencies { get; set; }
+        public DbSet<HelpService> HelpServices { get; set; }
         public DbSet<HelpRequest> HelpRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)

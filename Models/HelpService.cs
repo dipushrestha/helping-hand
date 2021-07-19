@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace helping_hand.Models
 {
@@ -9,5 +8,9 @@ namespace helping_hand.Models
 
         [Required]
         public string Service { get; set; }
+
+        //[Required]
+        public bool HasQuantity { get; set; }
+
     }
 }
