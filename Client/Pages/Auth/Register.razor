@@ -1,0 +1,105 @@
+﻿@page "/auth/register"
+@layout AuthLayout
+@inject HttpClient Http
+@inject ISnackbar SnackBar
+@inject NavigationManager NavigationManager
+
+<EditForm Model="userRegister" OnValidSubmit="RegisterUser">
+ 
+<DataAnnotationsValidator />
+<MudText Typo="Typo.h4" GutterBottom="true">Sign Up</MudText>
+<MudText>Already have an account? <MudLink Href="/pages/authentication/login">Sign In</MudLink></MudText>
+
+<MudTextField T="string" @bind-Value="@userRegister.FirstName" Label="First Name" 
+    Variant="Variant.Outlined" Class="my-4" For="() => userRegister.FirstName" />
+
+<MudTextField T="string" @bind-Value="@userRegister.LastName" Label="Last Name" 
+    Variant="Variant.Outlined" Class="my-4" For="() => userRegister.LastName" />
+
+<MudTextField T="string" @bind-Value="@userRegister.UserName" Label="Username" 
+    Variant="Variant.Outlined" Class="my-4" For="() => userRegister.UserName" />
+
+<MudTextField T="string" @bind-Value="userRegister.Email" Label="E-mail" 
+    Variant="Variant.Outlined" For="() => userRegister.Email"/>
+
+<MudTextField T="string" @bind-Value="@userRegister.PhoneNumber" Label="Phone Number" 
+    Variant="Variant.Outlined" Class="my-4" For="() => userRegister.PhoneNumber" />
+
+<MudTextField @bind-Value="@userRegister.Password" Label="Password" 
+    Variant="Variant.Outlined" InputType="@PasswordInput" For="() => userRegister.Password"
+    Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" Class="mt-4"/>
+
+<MudCheckBox @bind-Checked="@AgreeToTerms" Label="I agree to the terms and privacy" Color="Color.Primary" 
+    Class="ml-n1 my-3" />
+
+<MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!AgreeToTerms)"
+    Size="Size.Large" FullWidth="true">Register</MudButton>
+
+</EditForm>
+
+@code {
+
+    private RegisterDto userRegister = new();
+
+    public bool AgreeToTerms { get; set; }
+    bool PasswordVisibility;
+
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    protected override void OnInitialized()
+    {
+        userRegister.Roles = new List<string> { "User" };
+    }
+
+    void TogglePasswordVisibility()
+    {
+        @if (PasswordVisibility)
+        {
+            PasswordVisibility = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            PasswordVisibility = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+
+    private async Task RegisterUser(EditContext context)
+    {
+		try 
+        {
+			var response = await Http.PostAsJsonAsync("/api/auth/register", userRegister);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {   
+                var responseContent = await response.Content.ReadAsStringAsync();
+				SnackBar.Add(responseContent, Severity.Error);
+
+				return;
+            }
+
+			if (response.StatusCode != HttpStatusCode.Accepted)
+			{
+				var error = await response.Content.ReadFromJsonAsync<Error>();
+				SnackBar.Add(error.Title, Severity.Error);
+
+				return;
+			}
+
+			SnackBar.Add("User registered successfully! 😊", Severity.Success);
+			NavigationManager.NavigateTo("/");
+		} 
+		catch (Exception ex)
+		{
+			SnackBar.Add($"Error while registering new user! 😔 {ex.Message}", Severity.Error);
+		}
+        finally 
+        {
+            StateHasChanged();
+        }
+    }
+}

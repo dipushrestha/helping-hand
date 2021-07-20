@@ -38,12 +38,16 @@ namespace helping_hand.Server.Controllers
 
         [HttpPost]
         [Route("register")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             _logger.LogInformation($"Registration attempt for {registerDto.UserName}");
 
             if (!ModelState.IsValid)
             {
+                Console.Write("invalid");
                 return BadRequest(ModelState);
             }
 
@@ -74,6 +78,9 @@ namespace helping_hand.Server.Controllers
 
         [HttpPost]
         [Route("login")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
             _logger.LogInformation($"Login attempt for {loginDto.UserName}");

@@ -1,5 +1,4 @@
 ﻿@page "/request-help"
-@using System.Net
 @inject HttpClient Http
 @inject ISnackbar SnackBar
 @inject NavigationManager NavigationManager
@@ -140,7 +139,7 @@
 		} 
 		catch (Exception ex)
 		{
-			SnackBar.Add($"Error while posting the help request! {ex.Message}", Severity.Error);
+			SnackBar.Add($"Error while posting the help request! 😔 {ex.Message}", Severity.Error);
 		}
 	}
  }

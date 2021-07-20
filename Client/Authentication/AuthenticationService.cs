@@ -6,20 +6,22 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Components.Authorization;
+
 using Blazored.LocalStorage;
-using helping_hand.Models;
 using helping_hand.Models.Dto;
+using System.Net.Http.Json;
 
 namespace helping_hand.Client.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
         private readonly HttpClient _httpClient;
-        private readonly AuthStateProvider _authStateProvider;
+        private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;
 
         public AuthenticationService(HttpClient httpClient,
-            AuthStateProvider authStateProvider,
+            AuthenticationStateProvider authStateProvider,
             ILocalStorageService localStorage)
         {
             _httpClient = httpClient;
@@ -29,14 +31,7 @@ namespace helping_hand.Client.Authentication
 
         public async Task<TokenDto> Login(LoginDto userForLogin)
         {
-            var data = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", userForLogin.UserName),
-                new KeyValuePair<string, string>("password", userForLogin.Password)
-            });
-
-            var authResult = await _httpClient.PostAsync("api/auth/login", data);
+            var authResult = await _httpClient.PostAsJsonAsync("api/auth/login", userForLogin);
             var authContent = await authResult.Content.ReadAsStringAsync();
 
             if (!authResult.IsSuccessStatusCode)
@@ -50,7 +45,7 @@ namespace helping_hand.Client.Authentication
 
             await _localStorage.SetItemAsync("authToken", result.Token);
 
-            _authStateProvider.NotifyUserAuthentication(result.Token);
+            ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
 
@@ -60,7 +55,7 @@ namespace helping_hand.Client.Authentication
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken");
-            _authStateProvider.NotifyUserLogout();
+            ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
             _httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }

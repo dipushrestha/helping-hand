@@ -26,7 +26,7 @@ namespace helping_hand.Client.Authentication
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await _localStorage.GetItemAsync<string>("authToken");
-
+            Console.WriteLine("token checking");
             if (string.IsNullOrWhiteSpace(token))
             {
                 return _anonymous;
