@@ -4,6 +4,7 @@ using helping_hand.Models;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using helping_hand.Data.Configurations;
 
 namespace helping_hand.Data
 {
@@ -19,6 +20,8 @@ namespace helping_hand.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.ApplyConfiguration(new RoleConfiguration());
 
             builder.Entity<Request>().HasData(
                 new Request { Id = 1, Name = "John Doe", Urgency = "Urgent", Type = "Oxygen" },
