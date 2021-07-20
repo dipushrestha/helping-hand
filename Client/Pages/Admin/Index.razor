@@ -1,0 +1,23 @@
+﻿@page "/admin/"
+@attribute [Authorize(Roles = "Administrator")]
+
+<MudText Typo="Typo.h5" Align="Align.Center">Admin Panel</MudText>
+
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Manage Data">
+        <MudText>Content One</MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Manage Users">
+        <MudText>Content Two</MudText>
+    </MudTabPanel>
+@*    <MudTabPanel Text="Tab Three">
+        <MudText>Content Three</MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Tab Disabled" Disabled="true">
+        <MudText>Content Disabled</MudText>
+    </MudTabPanel>*@
+</MudTabs>
+
+@code {
+
+}

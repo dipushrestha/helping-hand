@@ -10,10 +10,30 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3" @onclick="this.RedirectToHome" Style="cursor: pointer">Helping Hand</MudText>
         <MudAppBarSpacer />
+        @*<MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />*@
+        <AuthorizeView>
+            <Authorized>
+                <MudMenu Direction="Direction.Left" OffsetX="true" Dense="true" Class="mt-1 ml-4">
+                    <ActivatorContent>
+                        <MudAvatar Variant="Variant.Outlined">
+                            <MudIcon Icon="@Icons.Material.Filled.AccountCircle"/>
+                        </MudAvatar>
+                    </ActivatorContent>
+                    <ChildContent>
+                        @*<MudDivider Class="mb-2" />*@
+                        <MudListItem Text="Profile" Icon="@Icons.Material.Filled.Person" Href="/personal/account" />
+                        <MudListItem Text="Logout" Icon="@Icons.Material.Filled.Logout" Href="/auth/logout" />
+                    </ChildContent>
+                </MudMenu>
+            </Authorized>
+            <NotAuthorized>
+                <MudButton EndIcon="@Icons.Material.Filled.Login" 
+                    Variant="Variant.Outlined" Link="/auth/login" Style="text-decoration:none">Sign in</MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
         <MudTooltip Text="Toggle light/dark theme">
-            <MudIconButton Icon="@Icons.Material.Filled.Brightness4" Color="Color.Inherit" OnClick="@((e) => ToggleTheme())" />
+            <MudIconButton Icon="@currentThemeIcon" Color="Color.Inherit" OnClick="@((e) => ToggleTheme())" />
         </MudTooltip>
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -27,6 +47,7 @@
 
 @code {
     bool _drawerOpen = true;
+    string currentThemeIcon = Icons.Material.Filled.Brightness7;
 
     MudTheme currentTheme = new MudTheme();
     MudTheme lightTheme = new LightTheme();
@@ -52,10 +73,12 @@
         if (currentTheme == lightTheme)
         {
             currentTheme = darkTheme;
+            currentThemeIcon = Icons.Material.Filled.Brightness7;
         }
         else
         {
             currentTheme = lightTheme;
+            currentThemeIcon = Icons.Material.Filled.Brightness4;
         }
     }
 }
