@@ -23,6 +23,9 @@ namespace helping_hand.Data
 
             builder.ApplyConfiguration(new RoleConfiguration());
 
+            builder.Entity<HelpService>().HasIndex(s => s.Service).IsUnique();
+            builder.Entity<Urgency>().HasIndex(u => u.Level).IsUnique();
+
             builder.Entity<Request>().HasData(
                 new Request { Id = 1, Name = "John Doe", Urgency = "Urgent", Type = "Oxygen" },
                 new Request { Id = 2, Name = "Jane Doe", Urgency = "Moderate", Type = "Bed" },

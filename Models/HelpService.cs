@@ -6,11 +6,14 @@ namespace helping_hand.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Service name is required.")]
         public string Service { get; set; }
 
         //[Required]
         public bool HasQuantity { get; set; }
+
+        [Required(ErrorMessage = "Active status is required.")]
+        public bool IsActive { get; set; }
 
     }
 }
