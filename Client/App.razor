@@ -1,14 +1,19 @@
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                <NotFoundCard />
+            </NotAuthorized>
+            <Authorizing>
+                <MudAlert Severity="Severity.Info">Authorization in progress...</MudAlert>
+            </Authorizing>
+        </AuthorizeRouteView>
     </Found>
     <NotFound>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p>Sorry, there's nothing at this address.</p>
-        </LayoutView>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <NotFoundCard />
+            </LayoutView>
+        </CascadingAuthenticationState>
     </NotFound>
 </Router>
-
-@*<MudThemeProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/> *@

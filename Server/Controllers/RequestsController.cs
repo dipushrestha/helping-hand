@@ -3,11 +3,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using helping_hand.Server.IRepository;
 using Microsoft.AspNetCore.Authorization;
 
 using helping_hand.Models;
-using System;
+using helping_hand.Data.IRepository;
+using helping_hand.Server.Configurations;
 
 namespace helping_hand.Server.Controllers
 {

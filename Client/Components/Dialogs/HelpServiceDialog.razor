@@ -1,0 +1,58 @@
+﻿@inject HttpClient Http
+@inject ISnackbar Snackbar
+@inject ILocalStorageService LocalStorage
+
+<EditForm Model="helpService" OnValidSubmit="AddHelpService">
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.AddToQueue" Class="mr-3 mb-n1"/>
+            Add Service
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string" Label="Service Name" @bind-Value="helpService.Service" For="() => helpService.Service"/>
+        <MudSwitch @bind-Checked="helpService.HasQuantity" Label="Has quantity?" Color="Color.Primary" For="() => helpService.HasQuantity"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Secondary" OnClick="Cancel">Cancel</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Add</MudButton>
+    </DialogActions>
+</MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private HelpService helpService = new();
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+    private async Task AddHelpService()
+    {
+        try
+		{
+            helpService.IsActive = true;
+            var authToken = await LocalStorage.GetItemAsync<string>("authToken");
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", authToken);
+
+			var response = await Http.PostAsJsonAsync("/api/admin/help-services", helpService);
+
+			if (response.StatusCode != HttpStatusCode.Created)
+			{
+				var error = await response.Content.ReadFromJsonAsync<Error>();
+				Snackbar.Add(error.Title, Severity.Error);
+
+				return;
+			}
+
+			Snackbar.Add("Help service Added 😇", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+		} 
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Error while adding the help service! 😔 {ex.Message}", Severity.Error);
+		}
+    }
+}

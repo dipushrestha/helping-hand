@@ -9,13 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using helping_hand.Server.Data;
-using helping_hand.Server.Services;
-using helping_hand.Server.Repository;
-using helping_hand.Server.IRepository;
-using helping_hand.Server.Configurations;
 using AspNetCoreRateLimit;
-using helping_hand.Server.Errors;
+
+using helping_hand.Data;
+using helping_hand.Models;
+using helping_hand.Server.Services;
+using helping_hand.Data.Repository;
+using helping_hand.Data.IRepository;
+using helping_hand.Server.Configurations;
 
 namespace helping_hand.Server
 {
@@ -32,7 +33,7 @@ namespace helping_hand.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DatabaseContext>(options => 
+            services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
@@ -46,9 +47,9 @@ namespace helping_hand.Server
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
 
-            services.AddCors(o => 
+            services.AddCors(o =>
             {
-                o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());    
+                o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             services.AddAutoMapper(typeof(MapperInitializer));
@@ -109,16 +110,19 @@ namespace helping_hand.Server
             });
         }
 
-        private async Task HandleApiFallback(HttpContext context)
+        private Task HandleApiFallback(HttpContext context)
         {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-
-            var error = new Error {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "Not Found!"
+            Error error = new()
+            {
+                Status = StatusCodes.Status404NotFound,
+                Title = "Not Found"
             };
 
-            await context.Response.WriteAsync(error.ToString());
+            context.Response.WriteAsync(error.ToString());
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+
+            return Task.CompletedTask;
         }
     }
 }

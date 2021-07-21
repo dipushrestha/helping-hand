@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using helping_hand.Data.IRepository;
+using X.PagedList;
+using helping_hand.Models;
+using System.Linq.Expressions;
 
 namespace helping_hand.Data.Repository
 {
@@ -31,7 +34,8 @@ namespace helping_hand.Data.Repository
             _dbSet.RemoveRange(entities);
         }
 
-        public async Task<T> Get(System.Linq.Expressions.Expression<Func<T, bool>> expression = null, List<string> includes = null)
+        public async Task<T> Get(
+            Expression<Func<T, bool>> expression = null, List<string> includes = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -43,7 +47,11 @@ namespace helping_hand.Data.Repository
             return await query.AsNoTracking().FirstOrDefaultAsync(expression);
         }
 
-        public async Task<IList<T>> GetAll(System.Linq.Expressions.Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
+        public async Task<IList<T>> GetAll(
+            Expression<Func<T, bool>> expression = null, 
+            Func<IQueryable<T>, 
+            IOrderedQueryable<T>> orderBy = null, 
+            List<string> includes = null)
         {
             IQueryable<T> query = _dbSet;
 
@@ -63,6 +71,33 @@ namespace helping_hand.Data.Repository
             }
 
             return await query.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IPagedList<T>> GetAll(
+             RequestParams requestParams,
+             Expression<Func<T, bool>> expression = null,
+             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+             List<string> includes = null
+        )
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (expression is not null)
+            {
+                query = query.Where(expression);
+            }
+
+            foreach (var prop in includes ?? Enumerable.Empty<string>())
+            {
+                query = query.Include(prop);
+            }
+
+            if (orderBy is not null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.AsNoTracking().ToPagedListAsync(requestParams.PageNumber, requestParams.PageSize);
         }
 
         public async Task Insert(T entity)

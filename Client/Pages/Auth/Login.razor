@@ -1,0 +1,71 @@
+﻿@page "/auth/login"
+@layout AuthLayout
+@inject ISnackbar SnackBar
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="userLogin" OnValidSubmit="LoginUser">
+
+<DataAnnotationsValidator />
+<MudText Typo="Typo.h4" GutterBottom="true">Sign In</MudText>
+
+<MudText>Don't have an account? <MudLink Href="/auth/register">Sign Up</MudLink></MudText>
+
+<MudTextField T="string" Label="Username" @bind-Value="@userLogin.UserName" 
+    Variant="Variant.Outlined" Class="my-6" For="() => userLogin.UserName"></MudTextField>
+
+<MudTextField @bind-Value="@userLogin.Password" Label="Password" 
+    Variant="Variant.Outlined" InputType="@PasswordInput" For="() => userLogin.Password"
+    Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="TogglePasswordVisibility" />
+
+@*<div Class="d-flex justify-space-between align-center">
+    <MudCheckBox T="bool" Label="Remember me?" Color="Color.Primary" Class="ml-n1 my-3"></MudCheckBox>
+    <MudLink Href="/pages/authentication/forgot-password">Forgot password?</MudLink>
+</div>*@
+
+<br />
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit" Size="Size.Large" FullWidth="true">
+    Sign In
+</MudButton>
+
+</EditForm>
+
+@code {
+
+    private LoginDto userLogin = new();
+
+    bool PasswordVisibility;
+    InputType PasswordInput = InputType.Password;
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void TogglePasswordVisibility()
+    {
+        @if (PasswordVisibility)
+        {
+            PasswordVisibility = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            PasswordVisibility = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
+    }
+
+    private async Task LoginUser()
+    {
+        var result = await AuthService.Login(userLogin);
+
+        if (result is not null)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            SnackBar.Add("Login failed! 😔 Make sure you have corrent credentials.", Severity.Error);
+        }
+    }
+}

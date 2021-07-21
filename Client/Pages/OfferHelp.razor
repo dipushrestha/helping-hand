@@ -1,63 +1,72 @@
-@page "/offer-help"
+﻿@page "/offer-help"
 @inject HttpClient Http
-@using helping_hand.Models
+@inject IDialogService DialogService
 
-<h1>Live Requests</h1>
+<br />
+<MudContainer MaxWidth="MaxWidth.Large">
+	<MudGrid>
+		@foreach (var helpRequest in helpRequests)
+		{
+			<MudItem xs="12" sm="6" md="6" lg="4">
+				<MudCard>
+					<MudCardContent>
+						<MudText Typo="Typo.body1">
+							Help needed with <strong>@helpRequest.Services.Split(",").Humanize()</strong>.
+						</MudText>
+						<MudDivider Class="my-2"/>
+						<MudText Typo="Typo.body2">Address:- <address>@helpRequest.Address</address></MudText>
+						<MudDivider Class="my-2"/>
 
-@if (requests == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Urgency</th>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>Requested On</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var request in requests)
-            {
-                <tr>
-                    <td><span class="badge badge-@(GetTag(request.Urgency))">@request.Urgency</span></td>
-                    <td>@request.Type</td>
-                    <td>@request.Name</td>
-                    <td>@request.Address</td>
-                    <td>@request.Date.ToString()</td>
-                    <td><button class="btn btn-@(GetTag(request.Urgency))">Offer Help</button></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+						@if(!string.IsNullOrEmpty(helpRequest.Name))
+						{
+							<MudText Typo="Typo.body2">Name: @helpRequest.Name</MudText>
+						}
+				
+						@if(!string.IsNullOrEmpty(helpRequest.Message))
+						{
+							<MudText Typo="Typo.body2"> Message: @helpRequest.Message</MudText>
+						}
+
+						<MudText Typo="Typo.caption"><em>Posted @helpRequest.RequestedDate.Humanize(utcDate: false).</em></MudText>
+						<MudDivider Class="my-6"/>
+
+						<div style="display: flex; justify-content: space-between">
+							<MudFab 
+								Label="Help" Size="Size.Small" 
+								Icon="@Icons.Material.Filled.AddCall"
+								OnClick="@(() => OpenOfferHelpDialog(helpRequest.PhoneNumber))" 
+							/>
+							<MudChip Color="@(ExtensionMethods.GetUrgencyTagColor(helpRequest.Urgency))" 
+								Size="Size.Small" Style="position: ab">@helpRequest.Urgency</MudChip>
+						</div>
+					</MudCardContent>
+				</MudCard><br />
+			</MudItem>
+		}
+	</MudGrid>
+	<br />&nbsp;
+</MudContainer>
 
 @code {
-    string[] urgencyLevel = new string[] { "Urgent", "Moderate", "Not Urgent" };
+	private List<HelpRequest> helpRequests = new();
 
-    private Request[] requests = new Request[] {
-        new Request() { Date = DateTime.Now, Urgency = "Urgent", Name = "John Doe", Type = "Ventilator", Address = "Kathmandu" },
-        new Request() { Date = DateTime.Now, Urgency = "Urgent", Name = "Jane Doe", Type = "Oxygen", Address = "Butwal" },
-        new Request() { Date = DateTime.Now, Urgency = "Moderate", Name = "David Smith", Type = "Bed", Address = "Pokhara" },
-        new Request() { Date = DateTime.Now, Urgency = "Moderate", Name = "Jim Sterling", Type = "Food", Address = "Kathmandu" },
-        new Request() { Date = DateTime.Now, Urgency = "Not Urgent", Name = "David Bond", Type = "Food", Address = "Nepalganj" }
-    };
+	private DialogParameters dialogParameters = new DialogParameters();
+	private DialogOptions dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Large };
 
-    string GetTag(string level)
-    {
-        var tagDict = new Dictionary<string, string>()
-        {
-            { "Urgent", "danger" },
-            { "Moderate", "warning" },
-            { "Not Urgent", "secondary" }
-        };
 
-        return tagDict[level];
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		helpRequests.AddRange(await GetHelpRequests());
+	}
 
+	public void OpenOfferHelpDialog(string phoneNumber)
+	{
+		dialogParameters.Add("PhoneNumber", phoneNumber);
+		DialogService.Show<ContactDialog>("Offer Help", dialogParameters, dialogOptions);
+	}
+
+	public async Task<List<HelpRequest>> GetHelpRequests()
+	{
+		return await Http.GetFromJsonAsync<List<HelpRequest>>("/api/help-requests");
+	}
 }
