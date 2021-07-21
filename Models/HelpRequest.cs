@@ -7,23 +7,24 @@ namespace helping_hand.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Requested Date field is required.")]
         public DateTime RequestedDate { get; set; }
 
         public DateTime? HelpedDate { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Urgency level is required.")]
         public string Urgency { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Services is required.")]
         public string Services { get; set; }
 
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Address is required.")]
         public string Address { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Phone number is required.")]
+        [Phone(ErrorMessage = "Not a valid phone number.")]
         public string PhoneNumber { get; set; }
 
         public string Message { get; set; }

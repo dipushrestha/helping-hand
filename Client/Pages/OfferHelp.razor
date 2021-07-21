@@ -1,10 +1,7 @@
 ﻿@page "/offer-help"
 @inject HttpClient Http
-@inject IDialogService DialogService;
-@using Humanizer
-@using helping_hand.Client.Components.Dialogs
+@inject IDialogService DialogService
 
-<MudText Typo="Typo.h5" Align="Align.Center">Offer Help & Reliefs</MudText>
 <br />
 <MudContainer MaxWidth="MaxWidth.Large">
 	<MudGrid>
@@ -39,7 +36,8 @@
 								Icon="@Icons.Material.Filled.AddCall"
 								OnClick="@(() => OpenOfferHelpDialog(helpRequest.PhoneNumber))" 
 							/>
-							<MudChip Color="Color.Error" Size="Size.Small" Style="position: ab">@helpRequest.Urgency</MudChip>
+							<MudChip Color="@(ExtensionMethods.GetUrgencyTagColor(helpRequest.Urgency))" 
+								Size="Size.Small" Style="position: ab">@helpRequest.Urgency</MudChip>
 						</div>
 					</MudCardContent>
 				</MudCard><br />

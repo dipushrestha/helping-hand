@@ -6,13 +6,13 @@ namespace helping_hand.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Label is required.")]
         public string Label { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Level is required.")]
         public int Level { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Active status is required.")]
         public bool IsActive { get; set; }
     }
 }

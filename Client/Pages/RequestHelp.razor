@@ -3,9 +3,10 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
-<MudText Typo="Typo.h5" Align="Align.Center">Request Help & Reliefs</MudText>
 <br />
 <MudContainer MaxWidth="MaxWidth.Medium">
+<EditForm Model="helpRequest" OnValidSubmit="PostHelpRequest">
+	<DataAnnotationsValidator />
 	<MudCard>
 		<MudCardHeader>
 			<CardHeaderContent>
@@ -16,7 +17,7 @@
 			<MudGrid>
 				<MudItem xs="12" sm="8" md="8">
 					<MudSelect 
-						T="string" Label="Service" Required="true" 
+						T="string" Label="Service" Required="true" For="() => helpRequest.Services"
 						HelperText="Select the help you need." MultiSelection="true" 
 						@bind-Value="helpRequest.Services" @bind-SelectedValues="options">
 
@@ -28,7 +29,7 @@
 				</MudItem>
 				<MudItem xs="12" sm="4" md="4">
 					<MudSelect 
-						T="string" Label="Urgency" Required="true" 
+						T="string" Label="Urgency" Required="true" For="() => helpRequest.Urgency"
 						HelperText="Select urgency for the help." 
 						@bind-Value="helpRequest.Urgency">
 
@@ -39,7 +40,7 @@
 					</MudSelect>
 				</MudItem>
 				<MudItem xs="12" sm="12" md="12">
-					<MudTextField 
+					<MudTextField For="() => helpRequest.Message"
 						@bind-Value="helpRequest.Message" Label="Additional Message (Optional)" 
 						HelperText="Anything else you would like to add." Variant="Variant.Text">
 					 </MudTextField>
@@ -57,7 +58,7 @@
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
 					<MudTextField 
-						@bind-Value="helpRequest.Address" 
+						@bind-Value="helpRequest.Address" For="() => helpRequest.Address">
 						Label="Address" Required="true" Variant="Variant.Text">
 					</MudTextField>
 				</MudItem>
@@ -74,7 +75,7 @@
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
 					<MudTextField 
-						@bind-Value="helpRequest.PhoneNumber" 
+						@bind-Value="helpRequest.PhoneNumber" For="() => helpRequest.PhoneNumber"
 						Label="Phone Number" Required="true" Variant="Variant.Text">
 					</MudTextField>
 				</MudItem>
@@ -90,17 +91,20 @@
 		<MudCardContent>
 			<MudGrid>
 				<MudItem  xs="12" sm="12" md="12">
-					<MudTextField @bind-Value="helpRequest.Name" Label="Name" Variant="Variant.Text"></MudTextField>
+					<MudTextField @bind-Value="helpRequest.Name" For="() => helpRequest.Name"
+						Label="Name" Variant="Variant.Text"></MudTextField>
 				</MudItem>
 			</MudGrid>
 		</MudCardContent>
 	</MudCard><br />
 	<MudButton 
+		ButtonType="ButtonType.Submit"
 		Variant="Variant.Filled" Color="Color.Primary" 
-		EndIcon="@Icons.Material.Filled.Send" OnClick="PostHelpRequest">
+		EndIcon="@Icons.Material.Filled.Send">
 		Request
 	</MudButton>
 	<br />&nbsp;
+</EditForm>
 </MudContainer>
 
 @code {
@@ -125,16 +129,6 @@
             Snackbar.Add(ex.Message, Severity.Error);
         }
 	}
-
-    /*private string[] services =
-    {
-        "Food", "Medicines", "Bed", "Ventilator", "Oxygen"
-    };
-
-	private string[] urgencyLevels =
-	{
-		"Urgent", "Moderate", "Not Urgent"
-	};*/
 
 	public async Task PostHelpRequest()
 	{
