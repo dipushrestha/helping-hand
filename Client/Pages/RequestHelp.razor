@@ -1,6 +1,6 @@
 ﻿@page "/request-help"
 @inject HttpClient Http
-@inject ISnackbar SnackBar
+@inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
 <MudText Typo="Typo.h5" Align="Align.Center">Request Help & Reliefs</MudText>
@@ -22,7 +22,7 @@
 
 						@foreach (var service in services)
 						{
-							<MudSelectItem T="string" Value="@service">@service</MudSelectItem>
+							<MudSelectItem T="string" Value="@service.Service">@service.Service</MudSelectItem>
 						}
 					</MudSelect>
 				</MudItem>
@@ -34,7 +34,7 @@
 
 						@foreach (var urgencyLevel in urgencyLevels)
 						{
-							<MudSelectItem T="string" Value="@urgencyLevel">@urgencyLevel</MudSelectItem>
+							<MudSelectItem T="string" Value="@urgencyLevel.Label">@urgencyLevel.Label</MudSelectItem>
 						}
 					</MudSelect>
 				</MudItem>
@@ -107,9 +107,26 @@
 
 	private readonly HelpRequest helpRequest = new();
 
+	private List<HelpService> services = new();
+	private List<Urgency> urgencyLevels = new();
+
     public HashSet<string> options { get; set; } = new HashSet<string>() {};
 
-    private string[] services =
+	
+	protected override async Task OnInitializedAsync()
+	{
+		try
+        {
+            services = await Http.GetFromJsonAsync<List<HelpService>>("api/admin/help-services");
+			urgencyLevels = await Http.GetFromJsonAsync<List<Urgency>>("api/admin/urgencies");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+	}
+
+    /*private string[] services =
     {
         "Food", "Medicines", "Bed", "Ventilator", "Oxygen"
     };
@@ -117,7 +134,7 @@
 	private string[] urgencyLevels =
 	{
 		"Urgent", "Moderate", "Not Urgent"
-	};
+	};*/
 
 	public async Task PostHelpRequest()
 	{
@@ -129,17 +146,17 @@
 			if (response.StatusCode != HttpStatusCode.Created)
 			{
 				var error = await response.Content.ReadFromJsonAsync<Error>();
-				SnackBar.Add(error.Title, Severity.Error);
+				Snackbar.Add(error.Title, Severity.Error);
 
 				return;
 			}
 
-			SnackBar.Add("Help is on the way! Stay safe 😇", Severity.Success);
+			Snackbar.Add("Help is on the way! Stay safe 😇", Severity.Success);
 			NavigationManager.NavigateTo("/offer-help");
 		} 
 		catch (Exception ex)
 		{
-			SnackBar.Add($"Error while posting the help request! 😔 {ex.Message}", Severity.Error);
+			Snackbar.Add($"Error while posting the help request! 😔 {ex.Message}", Severity.Error);
 		}
 	}
  }

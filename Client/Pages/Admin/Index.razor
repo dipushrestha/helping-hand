@@ -1,14 +1,15 @@
 ﻿@page "/admin/"
 @attribute [Authorize(Roles = "Administrator")]
-
-<MudText Typo="Typo.h5" Align="Align.Center">Admin Panel</MudText>
+@inject HttpClient httpClient
+@inject ISnackbar Snackbar
 
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
     <MudTabPanel Text="Manage Data">
-        <MudText>Content One</MudText>
+        <ServicesTable />
+        <br />
+        <UrgencyLevelsTable />
     </MudTabPanel>
     <MudTabPanel Text="Manage Users">
-        <MudText>Content Two</MudText>
     </MudTabPanel>
 @*    <MudTabPanel Text="Tab Three">
         <MudText>Content Three</MudText>
