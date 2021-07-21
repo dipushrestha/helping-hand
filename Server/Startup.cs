@@ -33,7 +33,7 @@ namespace helping_hand.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => 
+            services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
 
@@ -47,9 +47,9 @@ namespace helping_hand.Server
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
 
-            services.AddCors(o => 
+            services.AddCors(o =>
             {
-                o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());    
+                o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
 
             services.AddAutoMapper(typeof(MapperInitializer));
