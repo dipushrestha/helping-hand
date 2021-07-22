@@ -8,7 +8,7 @@
  
 <DataAnnotationsValidator />
 <MudText Typo="Typo.h4" GutterBottom="true">Sign Up</MudText>
-<MudText>Already have an account? <MudLink Href="/pages/authentication/login">Sign In</MudLink></MudText>
+<MudText>Already have an account? <MudLink Href="/auth/login">Sign In</MudLink></MudText>
 
 <MudTextField T="string" @bind-Value="@userRegister.FirstName" Label="First Name" 
     Variant="Variant.Outlined" Class="my-4" For="() => userRegister.FirstName" />
