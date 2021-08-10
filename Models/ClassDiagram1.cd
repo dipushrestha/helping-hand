@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="helping_hand.Models.Dto.LoginDto">
+    <Position X="6.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgAAAAACAQAAAAAAAAA=</HashCode>
+      <FileName>Dto\LoginDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.Dto.RegisterDto">
+    <Position X="8.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAAAAAAAAAAQAAAAgAAAAACAQAAAAAAAAg=</HashCode>
+      <FileName>Dto\RegisterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.Dto.TokenDto">
+    <Position X="3" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Dto\TokenDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.ApiUser">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>ApiUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.Error">
+    <Position X="4.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAUAEAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Error.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.HelpRequest">
+    <Position X="1.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAACAAAAAAAAAAAAAAAAQAQAAAAAAAACAAABMAACAAA=</HashCode>
+      <FileName>HelpRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.HelpService">
+    <Position X="3" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAEAAAAAAAAAAAQAAAAEAAAAAAAAA=</HashCode>
+      <FileName>HelpService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.Notice">
+    <Position X="6.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAABAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Notice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.RequestParams">
+    <Position X="1.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAEAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>RequestParams.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Models.Urgency">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAEAAAAAAAEAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Urgency.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
