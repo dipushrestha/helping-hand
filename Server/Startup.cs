@@ -36,7 +36,7 @@ namespace helping_hand.Server
             services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("sqlConnection"))
             );
-            System.Console.WriteLine(Configuration.GetConnectionString("sqlConnection"));
+            
             services.AddMemoryCache();
             services.ConfigureRateLimiting();
             services.AddHttpContextAccessor();

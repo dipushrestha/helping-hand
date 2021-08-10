@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using helping_hand.Data;
 
 namespace helpinghand.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210810071040_UpdateNotice")]
+    partial class UpdateNotice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,22 +50,15 @@ namespace helpinghand.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ce2721d8-bdb5-4e2f-a170-510da7a5c0e8",
-                            ConcurrencyStamp = "135909c3-6014-420b-ba31-f51536b8114c",
+                            Id = "2d572dda-9ac5-4e04-957e-9c3a01e4f781",
+                            ConcurrencyStamp = "4990f127-62dc-4f03-90a5-1bc4bd55a76c",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d436973f-14d4-447e-96b5-1307586eb55f",
-                            ConcurrencyStamp = "10d895a8-dbf2-48de-8358-ee21f722c97d",
-                            Name = "Announcer",
-                            NormalizedName = "ANNOUNCER"
-                        },
-                        new
-                        {
-                            Id = "d228bba0-8835-4a1d-bdad-2aaeec16c5ca",
-                            ConcurrencyStamp = "70700151-174c-46ce-a3ed-8a510e32334d",
+                            Id = "028061d1-efe2-43f5-99c4-a66e58a74afa",
+                            ConcurrencyStamp = "2b2cd0a9-591e-4053-9cb6-451d89cb0303",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -279,12 +274,7 @@ namespace helpinghand.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("HelpRequests");
                 });
@@ -321,8 +311,9 @@ namespace helpinghand.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Details")
                         .IsRequired()
@@ -335,12 +326,7 @@ namespace helpinghand.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Notices");
                 });
@@ -478,24 +464,6 @@ namespace helpinghand.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("helping_hand.Models.HelpRequest", b =>
-                {
-                    b.HasOne("helping_hand.Models.ApiUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("helping_hand.Models.Notice", b =>
-                {
-                    b.HasOne("helping_hand.Models.ApiUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

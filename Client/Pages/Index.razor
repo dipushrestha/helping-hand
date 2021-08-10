@@ -1,15 +1,146 @@
 ﻿@page "/"
+@page "/dashboard"
+@inject HttpClient Http
+@inject ISnackbar Snackbar
 
 <MudContainer >
-	<div>
-	 
-		<h1>Helping Hands</h1>
 
-		Welcome! request help and help others.
-	</div>
-
+<MudPaper Elevation="0" MaxWidth="MaxWidth.Small">
+    <div style="padding: 10px; text-align: center">
+        <MudText Typo="Typo.subtitle1">Welcome! request help and help others.</MudText>
+    </div>
+</MudPaper>
+<br />
+<MudPaper Elevation="1" MaxWidth="MaxWidth.Small">
+    <div style="padding: 10px; text-align: center">
+        <MudText Typo="Typo.subtitle1">Live Help Requests</MudText>
+    </div>
+</MudPaper>
+<br />
+<MudGrid>
+@foreach(var service in servicesCount)
+{
+   <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@(ExtensionMethods.GetIcon(service.Key))" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">@service.Key</MudText>
+                <MudText Typo="Typo.h5">@service.Value</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+}
+</MudGrid>
+<br />
+<MudDivider Class="my-2"/>
+<br /> 
+<MudPaper Elevation="1" MaxWidth="MaxWidth.Small">
+    <div style="padding: 10px; text-align: center">
+        <MudText Typo="Typo.subtitle1">Covid Information (Last 24 hours update & Total Data)</MudText>
+    </div>
+</MudPaper>
+<br />
+<MudGrid>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Coronavirus" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">New Cases</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.TodayCases</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.MoodBad" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Deaths</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.TodayDeaths</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Mood" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Recovered</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.TodayRecovered</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+<MudGrid>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Coronavirus" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Cases</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.Cases</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.MoodBad" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Deaths</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.Deaths</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Sick" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Active</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.Active</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="25" Class="d-flex flex-row pt-6 pb-4" Style="height:100px;">
+            <MudIcon Icon="@Icons.Material.Filled.Mood" Color="Color.Primary" Class="mx-4" Style="width:54px; height:54px;"></MudIcon>
+            <div>
+                <MudText Typo="Typo.subtitle1" Class="mud-text-secondary mb-n1">Total Recovered</MudText>
+                <MudText Typo="Typo.h5">@covidRecord.Recovered</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 </MudContainer>
+
+@code {
+    private CovidRecord covidRecord = new();
+    private List<HelpRequest> helpRequests = new();
+    private List<HelpService> helpServices = new();
+    private Dictionary<string, int> servicesCount = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var helpRequestsTask = Http.GetFromJsonAsync<List<HelpRequest>>("/api/help-requests");
+            var helpServicesTask = Http.GetFromJsonAsync<List<HelpService>>("/api/admin/help-services");
+
+            var covidRecordTask = Http.GetFromJsonAsync<CovidRecord>(
+                "https://corona.lmao.ninja/v2/countries/nepal?yesterday=true&strict=true&query"
+            );
+
+            await Task.WhenAll(helpRequestsTask, helpServicesTask, covidRecordTask);
+
+            helpRequests = helpRequestsTask.Result;
+            helpServices = helpServicesTask.Result;
+            covidRecord = covidRecordTask.Result;
+
+            servicesCount = ExtensionMethods.GetHelpServicesCount(helpServices, helpRequests);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}
 
 
 
