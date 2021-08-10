@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Blazored.LocalStorage;
 using helping_hand.Models.Dto;
 using System.Net.Http.Json;
+using System.Net;
+using helping_hand.Models;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace helping_hand.Client.Authentication
 {
@@ -29,6 +32,23 @@ namespace helping_hand.Client.Authentication
             _localStorage = localStorage;
         }
 
+        public async Task<Error> ConfirmEmail(string token, string email)
+        {
+            var param = new Dictionary<string, string> { ["token"] = token, ["email"] = email };
+            var confirmUrl = QueryHelpers.AddQueryString("/api/auth/confirm-email", param);
+            var result = await _httpClient.GetAsync(confirmUrl);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            var content = await result.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<Error>(content,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
         public async Task<TokenDto> Login(LoginDto userForLogin)
         {
             var authResult = await _httpClient.PostAsJsonAsync("api/auth/login", userForLogin);
@@ -36,6 +56,14 @@ namespace helping_hand.Client.Authentication
 
             if (!authResult.IsSuccessStatusCode)
             {
+                if (authResult.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    var error = JsonSerializer.Deserialize<Error>(authContent,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return new TokenDto { Error = error.Title };
+                }
+
                 return null;
             }
 

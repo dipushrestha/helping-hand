@@ -5,6 +5,7 @@ using helping_hand.Server.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,19 +22,22 @@ namespace helping_hand.Server.Controllers
         private readonly IAuthManager _authManager;
         private readonly ILogger<AuthController> _logger;
         private readonly IMapper _mapper;
+        private readonly EmailSender _emailSender;
 
         public AuthController
         (
             UserManager<ApiUser> userManager,
             IAuthManager authManager,
             ILogger<AuthController> logger,
-            IMapper mapper
+            IMapper mapper,
+            EmailSender emailSender
         )
         {
             _userManager = userManager;
             _authManager = authManager;
             _logger = logger;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         [HttpPost]
@@ -66,7 +70,19 @@ namespace helping_hand.Server.Controllers
                     return BadRequest("User registration attempt failed!");
                 }
 
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var param = new Dictionary<string, string>
+                {
+                    {"token", token },
+                    {"email", user.Email }
+                };
+
+                var baseUrl = $"{this.Request.Scheme}://{this.Request.Host}{this.Request.PathBase}";
+                var verificationUrl = QueryHelpers.AddQueryString($"{baseUrl}/auth/confirm-email", param);
+
+                await _emailSender.SendEmailConfirmation(verificationUrl, user.Email);
                 await _userManager.AddToRolesAsync(user, registerDto.Roles);
+
                 return Accepted();
             }
             catch (Exception ex)
@@ -79,7 +95,7 @@ namespace helping_hand.Server.Controllers
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
         {
@@ -94,7 +110,12 @@ namespace helping_hand.Server.Controllers
             {
                 if (!await _authManager.ValidateUser(loginDto))
                 {
-                    return Unauthorized();
+                    return Unauthorized(new Error { Title = "Invalid Credentials", Status = 401 });
+                }
+
+                if (!await _authManager.ValidateEmail(loginDto))
+                {
+                    return Unauthorized(new Error { Title = "Email is not confirmed", Status = 401 });
                 }
 
                 return Accepted(new { Token = await _authManager.CreateToken() });
@@ -105,6 +126,26 @@ namespace helping_hand.Server.Controllers
                 _logger.LogError(ex, $"Something went wrong in the {nameof(Login)} of the {nameof(AuthController)}.");
                 return Problem($"Something went wrong in the {nameof(Login)}.", statusCode: 500);
             }
+        }
+
+        [HttpGet("EmailConfirmation")]
+        [Route("confirm-email")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> EmailConfirmation([FromQuery] string email, [FromQuery] string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user == null)
+                return BadRequest(new Error { Title = "Invalid Email Confirmation Request", Status = 401 });
+
+            var confirmResult = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (!confirmResult.Succeeded)
+                return BadRequest(new Error { Title = "Invalid Email Confirmation Request", Status = 401 });
+
+            return Ok();
         }
     }
 }

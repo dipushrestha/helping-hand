@@ -29,6 +29,7 @@ namespace helping_hand.Server
 
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
             builder.AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            builder.Services.Configure<IdentityOptions>(o => o.User.RequireUniqueEmail = true);
         }
 
         public static void ConfigureJWT(this IServiceCollection services, IConfiguration Configuration)

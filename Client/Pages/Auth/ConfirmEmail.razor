@@ -1,0 +1,45 @@
+﻿@page "/auth/confirm-email"
+@using System.Web
+@layout AuthLayout
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+
+@if(showError)
+{
+	<MudAlert Severity="Severity.Error">
+		@errorMessage
+	</MudAlert>
+}
+@if(showSuccess)
+{
+	<MudAlert Severity="Severity.Success">
+		Your email has been successfully confirmed. <br />
+		<MudLink Href="./auth/login">click here to login.</MudLink>
+	</MudAlert>
+}
+
+@code {
+	private bool showSuccess = false;
+	private bool showError = false;
+	private string errorMessage;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await VerifyEmail();
+	}
+
+	protected async Task VerifyEmail()
+	{
+		var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+		var query = HttpUtility.ParseQueryString(uri.Query);
+
+		var token = query.Get("token");
+		var email = query.Get("email");
+
+		var error = await AuthService.ConfirmEmail(token, email);
+
+		showSuccess = error is null;
+		showError = error is not null;
+		errorMessage = error?.Title;
+	}
+}

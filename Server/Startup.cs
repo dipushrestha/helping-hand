@@ -46,7 +46,7 @@ namespace helping_hand.Server
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureJWT(Configuration);
-
+            
             services.AddCors(o =>
             {
                 o.AddPolicy("AllowAll", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -55,6 +55,7 @@ namespace helping_hand.Server
             services.AddAutoMapper(typeof(MapperInitializer));
             services.AddTransient<IAuthManager, AuthManager>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<EmailSender>();
 
             services.AddSwaggerGen(c =>
             {
