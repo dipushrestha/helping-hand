@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="helping_hand.Client.Authentication.AuthenticationService" BaseTypeListCollapsed="true">
+    <Position X="5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAEBAAAAAAAAAAAABAAAAIAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Authentication\AuthenticationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="helping_hand.Client.Authentication.AuthStateProvider">
+    <Position X="7" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAGEAAAAAAAAAAAABAAAAAAAAAAAABAAAAABAAAAAA=</HashCode>
+      <FileName>Authentication\AuthStateProvider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Client.Authentication.JwtParser">
+    <Position X="2.5" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAQAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Authentication\JwtParser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Client.Helpers.ExtensionMethods">
+    <Position X="0.5" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\ExtensionMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="helping_hand.Client.Program">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="helping_hand.Client.Authentication.IAuthenticationService">
+    <Position X="2.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Authentication\IAuthenticationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

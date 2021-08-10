@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="helping_hand.Data.Configurations.RoleConfiguration" BaseTypeListCollapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configurations\RoleConfiguration.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="helping_hand.Data.Repository.BaseRepository&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACQBAEAAAAAAAABAAAAAIAAAAAEAAAAAAgAAAAIAAAA=</HashCode>
+      <FileName>Repository\BaseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="helping_hand.Data.Repository.UnitOfWork" BaseTypeListCollapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAARAYEAACAAAAAAQAAAAAAAAAAAAAAAAAAAAhAAAEA=</HashCode>
+      <FileName>Repository\UnitOfWork.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="helping_hand.Data.AppDbContext">
+    <Position X="0.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAQAQAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAAEA=</HashCode>
+      <FileName>AppDbContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="helping_hand.Data.IRepository.IBaseRepository&lt;T&gt;">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQAAEAAAAAAAABAAAAAAAAAAAEAAAAAAgAAAAIAAAA=</HashCode>
+      <FileName>IRepository\IBaseRepository.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="helping_hand.Data.IRepository.IUnitOfWork">
+    <Position X="6.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAEA=</HashCode>
+      <FileName>IRepository\IUnitOfWork.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

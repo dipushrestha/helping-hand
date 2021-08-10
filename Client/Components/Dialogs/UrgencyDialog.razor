@@ -37,7 +37,7 @@
             var authToken = await LocalStorage.GetItemAsync<string>("authToken");
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", authToken);
 
-			var response = await Http.PostAsJsonAsync("/api/admin/help-services", urgency);
+			var response = await Http.PostAsJsonAsync("/api/admin/urgencies", urgency);
 
 			if (response.StatusCode != HttpStatusCode.Created)
 			{

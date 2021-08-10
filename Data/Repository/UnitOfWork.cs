@@ -13,6 +13,7 @@ namespace helping_hand.Data.Repository
         private IBaseRepository<HelpRequest> _helpRequests;
         private IBaseRepository<Urgency> _urgencies;
         private IBaseRepository<HelpService> _helpServices;
+        private IBaseRepository<Notice> _notices;
 
         public UnitOfWork(AppDbContext dbContext)
         {
@@ -23,6 +24,7 @@ namespace helping_hand.Data.Repository
         public IBaseRepository<HelpRequest> HelpRequests => _helpRequests ??= new BaseRepository<HelpRequest>(_dbContext);
         public IBaseRepository<Urgency> Urgencies => _urgencies ??= new BaseRepository<Urgency>(_dbContext);
         public IBaseRepository<HelpService> HelpServices => _helpServices ??= new BaseRepository<HelpService>(_dbContext);
+        public IBaseRepository<Notice> Notices => _notices ??= new BaseRepository<Notice>(_dbContext);
 
         public void Dispose()
         {

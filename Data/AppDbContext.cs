@@ -16,6 +16,7 @@ namespace helping_hand.Data
         public DbSet<Urgency> Urgencies { get; set; }
         public DbSet<HelpService> HelpServices { get; set; }
         public DbSet<HelpRequest> HelpRequests { get; set; }
+        public DbSet<Notice> Notices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

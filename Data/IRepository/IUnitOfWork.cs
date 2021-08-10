@@ -11,6 +11,7 @@ namespace helping_hand.Data.IRepository
         IBaseRepository<HelpRequest> HelpRequests { get; }
         IBaseRepository<Urgency> Urgencies { get; }
         IBaseRepository<HelpService> HelpServices { get; }
+        IBaseRepository<Notice> Notices { get; }
 
         Task Save();
     }
