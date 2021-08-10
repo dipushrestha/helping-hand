@@ -59,13 +59,17 @@
     {
         var result = await AuthService.Login(userLogin);
 
-        if (result is not null)
+        if (result.Token is not null)
         {
             NavigationManager.NavigateTo("/");
         }
+        else if (result.Error is not null)
+        {
+            SnackBar.Add($"Login failed! 😔 {result.Error}", Severity.Error);
+        }
         else
         {
-            SnackBar.Add("Login failed! 😔 Make sure you have corrent credentials.", Severity.Error);
+            SnackBar.Add("Login failed! 😔 Something went wrong.", Severity.Error);
         }
     }
 }

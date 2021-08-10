@@ -9,6 +9,7 @@ namespace helping_hand.Server.Services
     public interface IAuthManager
     {
         Task<bool> ValidateUser(LoginDto loginDto);
+        Task<bool> ValidateEmail(LoginDto loginDto);
         Task<string> CreateToken();
     }
 }

@@ -81,5 +81,11 @@ namespace helping_hand.Server.Services
             _user = await _userManager.FindByNameAsync(loginDto.UserName);
             return _user is not null && await _userManager.CheckPasswordAsync(_user, loginDto.Password);
         }
+
+        public async Task<bool> ValidateEmail(LoginDto loginDto)
+        {
+            _user = await _userManager.FindByNameAsync(loginDto.UserName);
+            return _user is not null && await _userManager.IsEmailConfirmedAsync(_user);
+        }
     }
 }

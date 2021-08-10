@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Serilog;
 using Serilog.Events;
+using helping_hand.Server.Services;
 
 namespace helping_hand.Server
 {
