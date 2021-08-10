@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace helping_hand.Models
 {
@@ -28,5 +29,10 @@ namespace helping_hand.Models
         public string PhoneNumber { get; set; }
 
         public string Message { get; set; }
+
+        public string UserId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public ApiUser User { get; set; }
     }
 }

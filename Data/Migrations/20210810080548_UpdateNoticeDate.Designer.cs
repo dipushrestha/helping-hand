@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using helping_hand.Data;
 
 namespace helpinghand.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210810080548_UpdateNoticeDate")]
+    partial class UpdateNoticeDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,22 +50,22 @@ namespace helpinghand.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ce2721d8-bdb5-4e2f-a170-510da7a5c0e8",
-                            ConcurrencyStamp = "135909c3-6014-420b-ba31-f51536b8114c",
+                            Id = "f2b16a24-8101-4658-8a73-99ac4e646425",
+                            ConcurrencyStamp = "1e64ee99-5862-4d70-ab2a-d469f11cdd55",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d436973f-14d4-447e-96b5-1307586eb55f",
-                            ConcurrencyStamp = "10d895a8-dbf2-48de-8358-ee21f722c97d",
+                            Id = "79f73471-05f3-4b50-86fc-a8d8d7b7b2e8",
+                            ConcurrencyStamp = "3dd67c18-0709-46f4-b016-9898a622059b",
                             Name = "Announcer",
                             NormalizedName = "ANNOUNCER"
                         },
                         new
                         {
-                            Id = "d228bba0-8835-4a1d-bdad-2aaeec16c5ca",
-                            ConcurrencyStamp = "70700151-174c-46ce-a3ed-8a510e32334d",
+                            Id = "a154ccfa-f9e6-4877-920d-ed3cd48d4af4",
+                            ConcurrencyStamp = "c1357508-a05d-46ba-ab65-bc4b68b2ee8d",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -279,12 +281,7 @@ namespace helpinghand.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("HelpRequests");
                 });
@@ -335,12 +332,7 @@ namespace helpinghand.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Notices");
                 });
@@ -478,24 +470,6 @@ namespace helpinghand.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("helping_hand.Models.HelpRequest", b =>
-                {
-                    b.HasOne("helping_hand.Models.ApiUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("helping_hand.Models.Notice", b =>
-                {
-                    b.HasOne("helping_hand.Models.ApiUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

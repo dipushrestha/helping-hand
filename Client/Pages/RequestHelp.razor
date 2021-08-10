@@ -3,7 +3,6 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
 
-<br />
 <MudContainer MaxWidth="MaxWidth.Medium">
 <EditForm Model="helpRequest" OnValidSubmit="PostHelpRequest">
 	<DataAnnotationsValidator />
@@ -123,6 +122,9 @@
         {
             services = await Http.GetFromJsonAsync<List<HelpService>>("api/admin/help-services");
 			urgencyLevels = await Http.GetFromJsonAsync<List<Urgency>>("api/admin/urgencies");
+
+			services = services.Where(s => s.IsActive).ToList();
+			urgencyLevels = urgencyLevels.Where(u => u.IsActive).ToList();
         }
         catch (Exception ex)
         {

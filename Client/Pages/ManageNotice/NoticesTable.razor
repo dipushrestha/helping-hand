@@ -1,0 +1,156 @@
+﻿@inject HttpClient httpClient
+@inject ISnackbar Snackbar
+@inject ILocalStorageService LocalStorage
+@inject IDialogService DialogService
+
+<MudTable Items="@Notices" Dense="true" Hover="true" CanCancelEdit="true" 
+    Filter="new Func<Notice,bool>(FilterFunc)" SortLabel="Sort By" @bind-SelectedItem="selectedItem"
+    CommitEditTooltip="Commit Edit" OnCommitEditClick="UpdateNotice" 
+    RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues" RowEditCommit="ItemHasBeenCommitted">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Notices</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" 
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+        <MudSpacer />
+        <a href="manage-notice/post" style="text-decoration: none">
+            <MudButton 
+		        Variant="Variant.Outlined" Color="Color.Primary" 
+		        StartIcon="@Icons.Material.Filled.AddAlert">
+                Post
+	        </MudButton>
+        </a>
+    </ToolBarContent>
+    <ColGroup>
+        <col style="width:20%;" />
+        <col style="width:40%;" />
+        <col style="width:30%;" />
+        <col style="width:10%;" />
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<Notice, object>(x=>x.Title)">Title</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Notice, object>(x=>x.Details)">Details</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Notice, object>(x=>x.Link)">Link</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<Notice, object>(x=>x.Date)">Date</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Service">@context.Title</MudTd>
+        <MudTd DataLabel="Service">@context.Details</MudTd>
+        <MudTd DataLabel="Active">@context.Link</MudTd>
+        <MudTd DataLabel="Active">@context.Date</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Label">
+            <MudTextField @bind-Value="@context.Title" Required />
+        </MudTd>
+        <MudTd DataLabel="Label">
+            <MudTextField @bind-Value="@context.Details" Required />
+        </MudTd>
+        <MudTd DataLabel="Label">
+            <MudTextField @bind-Value="@context.Link" Required />
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private List<string> editEvents = new();
+    private string searchString = "";
+    private Notice elementBeforeEdit;
+    private Notice selectedItem = null;
+    private HashSet<Notice> selectedItems = new HashSet<Notice>();
+
+    private IEnumerable<Notice> Notices = new List<Notice>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetNotices();
+    }
+
+    protected async Task GetNotices()
+    {
+        try
+        {
+            Notices = await httpClient.GetFromJsonAsync<List<Notice>>("api/notices");
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+
+    private async Task UpdateNotice()
+    {
+        try
+        {
+            var authToken = await LocalStorage.GetItemAsync<string>("authToken");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", authToken);
+
+            var response = await httpClient
+                .PutAsJsonAsync<Notice>($"api/notices/{selectedItem.Id}", selectedItem);
+
+            if (response.StatusCode != HttpStatusCode.NoContent)
+            {
+                var error = await response.Content.ReadFromJsonAsync<Error>();
+				Snackbar.Add(error.Title, Severity.Error);
+                ResetItemToOriginalValues(selectedItem);
+
+				return;
+            }
+
+            Snackbar.Add("Notice updated", Severity.Info);
+        }
+        catch (Exception ex)
+        {
+            ResetItemToOriginalValues(selectedItem);
+            Snackbar.Add($"Error while updating the Notice! 😔 {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void ClearEventLog()
+    {
+        editEvents.Clear();
+    }
+
+    private void AddEditionEvent(string message)
+    {
+        editEvents.Add(message);
+        StateHasChanged();
+    }
+
+    private void BackupItem(object element)
+    {
+        elementBeforeEdit = new()
+        {            
+            Title = ((Notice)element).Title,
+            Details = ((Notice)element).Details,
+            Link = ((Notice)element).Link
+        };
+        AddEditionEvent($"RowEditPreview event: made a backup of Notice {((Notice)element).Title}");
+    }
+
+    private void ItemHasBeenCommitted(object element)
+    {
+        AddEditionEvent($"RowEditCommit event: Changes to Notice {((Notice)element).Title} committed");
+    }
+
+    private void ResetItemToOriginalValues(object element)
+    {
+        ((Notice)element).Title = elementBeforeEdit.Title;
+        ((Notice)element).Details = elementBeforeEdit.Details;
+        ((Notice)element).Link = elementBeforeEdit.Link;
+        AddEditionEvent($"RowEditCancel event: Editing of Notice {((Notice)element).Title} cancelled");
+    }
+
+    private bool FilterFunc(Notice element)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

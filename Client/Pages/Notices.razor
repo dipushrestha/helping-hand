@@ -1,0 +1,36 @@
+﻿@page "/notice"
+@inject HttpClient Http
+
+<MudContainer MaxWidth="MaxWidth.Large">
+		@foreach (var notice in notices)
+		{
+			<MudCard>
+				<MudCardContent>
+					<MudText>@notice.Title</MudText>
+					<MudText Typo="Typo.body2">@notice.Details</MudText>
+				</MudCardContent>
+				<MudCardActions>
+					@if(!string.IsNullOrEmpty(notice.Link))
+					{
+						<MudButton Variant="Variant.Text" Color="Color.Primary">
+							<a target="_blank" href="@notice.Link" style="text-decoration: none">Learn More</a>
+						</MudButton>
+					}
+				</MudCardActions>
+			</MudCard><br /><span></span>
+		}
+</MudContainer>
+
+@code {
+	private List<Notice> notices = new();
+
+	protected override async Task OnInitializedAsync()
+	{
+		notices.AddRange(await GetNotices());
+	}
+
+	public async Task<List<Notice>> GetNotices()
+	{
+		return await Http.GetFromJsonAsync<List<Notice>>("/api/notices");
+	}
+}

@@ -2,8 +2,14 @@
 @inject HttpClient Http
 @inject IDialogService DialogService
 
-<br />
 <MudContainer MaxWidth="MaxWidth.Large">
+	<MudChipSet MultiSelection="true" @bind-SelectedChips="selectedChips">
+		@foreach(var service in servicesCount)
+		{
+			<MudChip OnClick="FilterHelpRequestsByService" Text="@service.Key"></MudChip>
+		}
+	</MudChipSet>
+	<br />
 	<MudGrid>
 		@foreach (var helpRequest in helpRequests)
 		{
@@ -48,15 +54,24 @@
 </MudContainer>
 
 @code {
+	private List<HelpRequest> initialHelpRequests = new();
 	private List<HelpRequest> helpRequests = new();
+	private List<HelpService> helpServices = new();
+	private List<Urgency> urgencyLevels = new();
+	private Dictionary<string, int> servicesCount = new();
 
+	private MudChip[] selectedChips;
 	private DialogParameters dialogParameters = new DialogParameters();
 	private DialogOptions dialogOptions = new DialogOptions { MaxWidth = MaxWidth.Large };
 
-
 	protected override async Task OnInitializedAsync()
 	{
+		helpServices = await Http.GetFromJsonAsync<List<HelpService>>("/api/admin/help-services");
+		urgencyLevels = await Http.GetFromJsonAsync<List<Urgency>>("api/admin/urgencies");
 		helpRequests.AddRange(await GetHelpRequests());
+		initialHelpRequests.AddRange(helpRequests);
+
+		servicesCount = ExtensionMethods.GetHelpServicesCount(helpServices, helpRequests);
 	}
 
 	public void OpenOfferHelpDialog(string phoneNumber)
@@ -67,6 +82,26 @@
 
 	public async Task<List<HelpRequest>> GetHelpRequests()
 	{
-		return await Http.GetFromJsonAsync<List<HelpRequest>>("/api/help-requests");
+		var requests = await Http.GetFromJsonAsync<List<HelpRequest>>("/api/help-requests");
+
+		return requests
+			.OrderBy(r => ExtensionMethods.GetUrgencyLevel(urgencyLevels, r.Urgency))
+			.ThenBy(r => r.RequestedDate)
+			.ToList();
+	}
+
+	private void FilterHelpRequestsByService()
+	{
+		List<HelpRequest> tempList = new List<HelpRequest>();
+		tempList.AddRange(initialHelpRequests);
+		helpRequests = tempList;
+
+		if (selectedChips.Length > 0)
+		{
+			
+			helpRequests = helpRequests
+				.Where(h => selectedChips.Select(s => s.Text).ToArray().Any(h.Services.Contains))
+				.ToList();
+		} 
 	}
 }

@@ -46,7 +46,7 @@ namespace helping_hand.Server.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, _user.UserName)
+                new Claim(ClaimTypes.Name, _user.Id)
             };
 
             var roles = await _userManager.GetRolesAsync(_user);

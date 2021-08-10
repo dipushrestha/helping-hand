@@ -14,6 +14,7 @@ namespace helping_hand.Data.Configurations
         {
             builder.HasData(
                 new IdentityRole { Name = "User", NormalizedName = "USER" },
+                new IdentityRole { Name = "Announcer", NormalizedName = "ANNOUNCER" },
                 new IdentityRole { Name = "Administrator", NormalizedName = "ADMINISTRATOR" }
             );
         }
